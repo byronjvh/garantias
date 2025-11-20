@@ -3,15 +3,23 @@
 :root {
   --background: #eef3f5;
   --foreground: #171717;
-  --card-bg: #fff
+  --card-bg: #fff;
+  --accent: #3174f0;
+  --accent-2: #ff5800;
+  --p-color: #283041;
+  --title-color: #192338;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card-bg: var(--card-bg);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
   --font-title: var(--font-montserrat);
   --font-p: var(--font-poppins);
+  --color-p-color: var(--accent-2);
+  --color-title-color: var(--accent-2);
 }
 
 @media (prefers-color-scheme: dark) {

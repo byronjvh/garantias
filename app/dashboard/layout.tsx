@@ -12,7 +12,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <div className="h-full flex flex-col">
+        <div className="h-full flex flex-col text-p-color">
             <header className="flex justify-between items-center w-full h-14 p-4 bg-card-bg z-10 shadow "><a href=""><img src="/logo.png" alt="logo" className="h-8 object-contain" /></a> Perfil</header>
             <div className="flex flex-1">
                 <aside className="px-2 pt-4 h-full w-full max-w-[250px] bg-card-bg">
