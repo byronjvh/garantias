@@ -18,8 +18,8 @@
   --color-accent-2: var(--accent-2);
   --font-title: var(--font-montserrat);
   --font-p: var(--font-poppins);
-  --color-p-color: var(--accent-2);
-  --color-title-color: var(--accent-2);
+  --color-p-color: var(--p-color);
+  --color-title-color: var(--title-color);
 }
 
 @media (prefers-color-scheme: dark) {
