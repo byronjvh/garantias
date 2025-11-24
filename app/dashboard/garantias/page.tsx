@@ -1,4 +1,5 @@
 import { Pencil, Trash2 } from "lucide-react";
+import WarrantyStatus from "../components/WarrantyStatus"
 
 export default function Garantias() {
     return (
@@ -24,16 +25,12 @@ export default function Garantias() {
                             <p className="text-xs ">Descripción corta de la garantía para identificarla mejor</p>
                         </div>
                         <div className="flex items-center justify-center">
-                            <select className="" id="state-select">
-                                <option value="">Pendiente </option>
-                                <option value="">Resuelta </option>
-                                <option value="">En espera </option>
-                            </select>
+                            <WarrantyStatus />
                         </div>
                         <p className="flex items-center justify-center">19/11/2025</p>
                         <div className="flex items-center justify-end gap-2">
-                            <button><Pencil size={20} /></button>
-                            <button><Trash2 size={20} /></button>
+                            <button className="bg-accent p-1 text-white rounded cursor-pointer"><Pencil size={18} /></button>
+                            <button className="bg-red-500 p-1 text-white rounded cursor-pointer"><Trash2 size={18} /></button>
                         </div>
                     </article>
                 </li>
@@ -44,16 +41,12 @@ export default function Garantias() {
                             <p className="text-xs ">Descripción corta de la garantía para identificarla mejor</p>
                         </div>
                         <div className="flex items-center justify-center">
-                            <select className="" id="state-select">
-                                <option value="">Pendiente </option>
-                                <option value="">Resuelta </option>
-                                <option value="">En espera </option>
-                            </select>
+                            <WarrantyStatus />
                         </div>
                         <p className="flex items-center justify-center">19/11/2025</p>
                         <div className="flex items-center justify-end gap-2">
-                            <button><Pencil size={20} /></button>
-                            <button><Trash2 size={20} /></button>
+                            <button className="bg-accent p-1 text-white rounded cursor-pointer"><Pencil size={18} /></button>
+                            <button className="bg-red-500 p-1 text-white rounded cursor-pointer"><Trash2 size={18} /></button>
                         </div>
                     </article>
                 </li>
@@ -64,16 +57,12 @@ export default function Garantias() {
                             <p className="text-xs ">Descripción corta de la garantía para identificarla mejor</p>
                         </div>
                         <div className="flex items-center justify-center">
-                            <select className="" id="state-select">
-                                <option value="">Pendiente </option>
-                                <option value="">Resuelta </option>
-                                <option value="">En espera </option>
-                            </select>
+                            <WarrantyStatus />
                         </div>
                         <p className="flex items-center justify-center">19/11/2025</p>
                         <div className="flex items-center justify-end gap-2">
-                            <button><Pencil size={20} /></button>
-                            <button><Trash2 size={20} /></button>
+                            <button className="bg-accent p-1 text-white rounded cursor-pointer"><Pencil size={18} /></button>
+                            <button className="bg-red-500 p-1 text-white rounded cursor-pointer"><Trash2 size={18} /></button>
                         </div>
                     </article>
                 </li>
