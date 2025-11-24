@@ -1,5 +1,6 @@
 import { FileText, ShieldCheck } from "lucide-react";
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
     title: "Create Next App",
@@ -17,8 +18,8 @@ export default function RootLayout({
             <div className="flex flex-1">
                 <aside className="px-2 pt-4 h-full w-full max-w-[250px] bg-card-bg">
                     <ul className="flex flex-col gap-2">
-                        <li className=""><a href="" className="p-2 w-full hover:bg-gray-300 inline-flex items-center gap-2 text-lg rounded"><span><ShieldCheck /></span>Garantías</a></li>
-                        <li className=""><a href="" className="p-2 w-full hover:bg-gray-300 inline-flex items-center gap-2 text-lg rounded"><span><FileText /></span>{`Reportes (pronto...)`}</a></li>
+                        <li className=""><Link href="./garantias" className="p-2 w-full hover:bg-gray-300 inline-flex items-center gap-2 text-lg rounded"><span><ShieldCheck /></span>Garantías</Link></li>
+                        <li className=""><Link href="./reportes" className="p-2 w-full hover:bg-gray-300 inline-flex items-center gap-2 text-lg rounded"><span><FileText /></span>{`Reportes (pronto...)`}</Link></li>
                     </ul>
                 </aside>
                 <main className="font-p p-4 py-6 w-full flex flex-col gap-4">
