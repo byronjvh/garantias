@@ -51,3 +51,10 @@ export interface Warranty {
     resolucion: string;
     producto: Producto;
 }
+
+export type PageProps = {
+    params: {
+        id: string;
+    };
+    searchParams: Record<string, string | string[] | undefined>;
+};
