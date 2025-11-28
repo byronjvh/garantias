@@ -1,0 +1,144 @@
+[
+    {
+        "id": 1,
+        "descripcion_corta": "Laptop no enciende después de actualización",
+        "fecha": "22/3/2025",
+        "telefono": "88888888",
+        "nombre": "Gabriel",
+        "factura": "INV0011200122",
+        "correo": "gabriel@example.com",
+        "status": "processing",
+        "resolucion": "",
+        "producto": {
+            "descripcion": "Laptop Gamer ASUS TUF",
+            "sku": "ASUS-TUF-15",
+            "enciende": true,
+            "puede_formatear": true,
+            "contrasena": "",
+            "cpu": "Ryzen 7 4800H",
+            "gpu": "RTX 3050 Ti",
+            "ram": {
+                "modulos": "2",
+                "cantidad": "16GB"
+            },
+            "almacenamiento": [
+                {
+                    "cantidad": "512GB",
+                    "tipo": "NVMe"
+                }
+            ],
+            "tapa_izquierda": {
+                "material": "vidrio"
+            },
+            "tapa_derecha": {
+                "material": "metal"
+            },
+            "psu": {
+                "descripcion": "",
+                "watts": "",
+                "cable": true
+            },
+            "cargador": {
+                "incluido": true,
+                "capacidad": "180W",
+                "notas": "Asus original"
+            },
+            "serie": "SNAS123456",
+            "estado_fisico": "Buen estado general",
+            "problema": "Pantalla parpadea al mover la tapa"
+        }
+    },
+    {
+        "id": 2,
+        "descripcion_corta": "PC no enciende",
+        "fecha": "10/2/2025",
+        "telefono": "70112233",
+        "nombre": "María López",
+        "factura": "INV000998812",
+        "correo": "maria@example.com",
+        "status": "diagnosis",
+        "resolucion": "",
+        "producto": {
+            "descripcion": "PC Gamer Armada",
+            "sku": "PC-CRTECH-G01",
+            "enciende": false,
+            "puede_formatear": false,
+            "contrasena": "",
+            "cpu": "Intel i5 10400F",
+            "gpu": "GTX 1660 Super",
+            "ram": {
+                "modulos": "2",
+                "cantidad": "16GB"
+            },
+            "almacenamiento": [
+                {
+                    "cantidad": "1TB",
+                    "tipo": "SSD SATA"
+                }
+            ],
+            "tapa_izquierda": {
+                "material": "vidrio"
+            },
+            "tapa_derecha": {
+                "material": "metal"
+            },
+            "psu": {
+                "descripcion": "EVGA BR",
+                "watts": "500W",
+                "cable": false
+            },
+            "cargador": {
+                "incluido": false,
+                "capacidad": "",
+                "notas": ""
+            },
+            "serie": "PCSN449221",
+            "estado_fisico": "Rayón lateral derecho",
+            "problema": "No da video"
+        }
+    },
+    {
+        "id": 3,
+        "descripcion_corta": "Monitor con líneas horizontales",
+        "fecha": "3/1/2025",
+        "telefono": "60012244",
+        "nombre": "Daniel Vargas",
+        "factura": "INV000123522",
+        "correo": "daniel@example.com",
+        "status": "resolved",
+        "resolucion": "Proveedor envió reemplazo nuevo",
+        "producto": {
+            "descripcion": "Monitor LG UltraGear 27''",
+            "sku": "LG-27GN800",
+            "enciende": false,
+            "puede_formatear": false,
+            "contrasena": "",
+            "cpu": "",
+            "gpu": "",
+            "ram": {
+                "modulos": "",
+                "cantidad": ""
+            },
+            "almacenamiento": [],
+            "tapa_izquierda": {
+                "material": "plastico"
+            },
+            "tapa_derecha": {
+                "material": "plastico"
+            },
+            "psu": {
+                "descripcion": "Adaptador LG original",
+                "watts": "65W",
+                "cable": true
+            },
+            "cargador": {
+                "incluido": true,
+                "capacidad": "",
+                "notas": ""
+            },
+            "serie": "LG55671200",
+            "estado_fisico": "Perfecto estado",
+            "problema": "Pantalla no enciende"
+        }
+    }
+]
