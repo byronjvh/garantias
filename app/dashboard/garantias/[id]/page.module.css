@@ -7,7 +7,7 @@
 :global(.label) {
     background-color: #fc6522;
     color: white;
-    padding: 2px 8px;
+    padding: 1px 8px;
     border: 1px solid #444;
 }
 
@@ -16,5 +16,5 @@
     flex: 1;
     background-color: white;
     border: 1px solid #444;
-    padding: 2px 8px;
+    padding: 1px 8px;
 }
