@@ -1,17 +1,15 @@
 "use client"
 
+import { Status, StatusKey } from "@/types";
 import { useEffect, useState } from "react"
 
-const STATUSES = {
+export const STATUSES = {
     pending: "pending",
     diagnosis: "diagnosis",
     processing: "processing",
     denied: "denied",
     resolved: "resolved"
 } as const
-
-export type StatusKey = keyof typeof STATUSES;
-export type Status = (typeof STATUSES)[keyof typeof STATUSES];
 
 const STYLE: Record<StatusKey, string> = {
     pending: "border-yellow-600 text-yellow-800 bg-yellow-50",
