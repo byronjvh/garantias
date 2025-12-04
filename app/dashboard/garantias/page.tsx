@@ -5,6 +5,7 @@ import { Pencil, Trash2 } from "lucide-react";
 import WarrantyStatus from "../components/WarrantyStatus";
 import type { Warranty } from "../../../types";
 import Link from "next/link";
+import PrimaryButton from "@/app/components/PrimaryButton";
 
 
 export default function GarantiasPage() {
@@ -18,7 +19,7 @@ export default function GarantiasPage() {
             <header className="flex flex-col gap-4">
                 <div className="flex justify-between items-center">
                     <h1 className="font-title font-bold text-lg">Lista de garantías</h1>
-                    <a href="" className="bg-accent px-3 py-2 text-sm font-bold text-white hover:brightness-110 ease-out transition-all duration-200 rounded"> Crear Nueva </a>
+                    <PrimaryButton text="Crear Nueva" />
                 </div>
                 <div className="flex justify-between bg-card-bg p-2 rounded text-sm border border-gray-300">
                     <select id="filter-select">
