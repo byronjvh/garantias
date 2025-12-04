@@ -1,9 +1,4 @@
-export type WarrantyStatus =
-    | "pending"
-    | "diagnosis"
-    | "processing"
-    | "denied"
-    | "resolved";
+import { STATUSES } from "./app/dashboard/components/WarrantyStatus";
 
 export interface Producto {
     descripcion: string;
@@ -36,7 +31,6 @@ export interface Producto {
     serie: string;
     estado_fisico: string;
     problema: string;
-    resolucion: string;
 }
 
 export interface Warranty {
@@ -47,7 +41,7 @@ export interface Warranty {
     nombre: string;
     factura: string;
     correo: string;
-    status: WarrantyStatus;
+    status: Status;
     resolucion: string;
     producto: Producto;
 }
@@ -58,3 +52,6 @@ export type PageProps = {
     };
     searchParams: Record<string, string | string[] | undefined>;
 };
+
+export type StatusKey = keyof typeof STATUSES;
+export type Status = (typeof STATUSES)[keyof typeof STATUSES];
