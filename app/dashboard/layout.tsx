@@ -13,16 +13,16 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <div className="h-full flex flex-col text-p-color">
+        <div className="h-svh flex flex-col text-p-color">
             <header className="flex justify-between items-center w-full h-14 p-4 bg-card-bg z-10 shadow "><a href=""><img src="/logo.png" alt="logo" className="h-8 object-contain" /></a> Perfil</header>
-            <div className="flex flex-1">
+            <div className="flex flex-1 max-h-[calc(100svh-60px)]">
                 <aside className="px-2 pt-4 h-full w-full max-w-[250px] bg-card-bg">
                     <ul className="flex flex-col gap-2">
                         <li className=""><Link href="/dashboard/garantias" className="p-2 w-full hover:bg-gray-300 inline-flex items-center gap-2 text-lg rounded"><span><ShieldCheck /></span>Garantías</Link></li>
                         <li className=""><Link href="" className="p-2 w-full hover:bg-gray-300 inline-flex items-center gap-2 text-lg rounded"><span><FileText /></span>{`Reportes (pronto...)`}</Link></li>
                     </ul>
                 </aside>
-                <main className="font-p p-4 py-6 w-full flex flex-col gap-4">
+                <main className="font-p p-4 py-6 w-full flex flex-col gap-4 overflow-y-scroll">
                     {children}
                 </main>
             </div>
