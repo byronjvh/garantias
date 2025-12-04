@@ -34,3 +34,9 @@ body {
   color: var(--foreground);
   font-family: sans-serif;
 }
+
+@layer base {
+  img {
+    display: initial;
+  }
+}
