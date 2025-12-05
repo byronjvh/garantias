@@ -9,7 +9,6 @@ export default function Warranty({ id, warranty }: Props) {
 
     return (
         <div id="pdf" className="h-[11in] w-[8.5in] bg-white flex flex-col gap-4 p-10 text-xs">
-            <h1>Boleta #{id} {warranty?.nombre}</h1>
             <section className="">
                 <div className="flex row">
                     <div className="flex-1 flex column"><p className="label">Fecha:</p> <p className="value">{warranty?.fecha}</p></div>
