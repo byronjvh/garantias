@@ -4,7 +4,6 @@ import { warrantyList } from "@/app/data/WarrantyList"
 import Warranty from "./components/Warranty"
 import "./page.module.css"
 import PrimaryButton from "@/app/components/PrimaryButton"
-import html2pdf from "html2pdf.js"
 import { use, useState } from "react"
 
 type Props = {
@@ -22,6 +21,8 @@ export default function WarrantyPage({ params }: Props) {
         setLoading(true)
         const sheet = document.getElementById("pdf")
         if (!sheet) return
+
+        const html2pdf = (await import("html2pdf.js")).default;
 
         let opt = {
             filename: `Garantía_${warranty?.nombre}.pdf`,
