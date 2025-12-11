@@ -1,3 +1,4 @@
+import { SignOutButton } from "@clerk/nextjs";
 import { FileText, ShieldCheck } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -14,7 +15,7 @@ export default function RootLayout({
 }>) {
     return (
         <div className="h-svh flex flex-col text-p-color">
-            <header className="flex justify-between items-center w-full h-14 p-4 bg-card-bg z-10 shadow "><a href=""><img src="/logo.png" alt="logo" className="h-8 object-contain" /></a> Perfil</header>
+            <header className="flex justify-between items-center w-full h-14 p-4 bg-card-bg z-10 shadow "><a href=""><img src="/logo.png" alt="logo" className="h-8 object-contain" /></a> <SignOutButton redirectUrl="/sign-in" /></header>
             <div className="flex flex-1 h-[calc(100svh-60px)]">
                 <aside className="px-2 pt-4 h-full w-full max-w-[250px] bg-card-bg">
                     <ul className="flex flex-col gap-2">
