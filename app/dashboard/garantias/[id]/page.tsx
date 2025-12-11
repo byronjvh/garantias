@@ -30,7 +30,12 @@ export default function WarrantyPage({ params }: Props) {
             html2canvas: { scale: 3 },
             jsPDF: { unit: "in", format: "letter", orientation: "portrait" as const }
         };
-        html2pdf().set(opt).from(sheet).save().finally(() => setLoading(false))
+        html2pdf()
+            .set(opt)
+            .from(sheet)
+            .outputPdf("bloburl")
+            .then(pdfUrl => window.open(pdfUrl))
+            .finally(() => setLoading(false))
     }
 
     if (!warranty) return <>No hay Garantía</>
@@ -39,7 +44,7 @@ export default function WarrantyPage({ params }: Props) {
         <div className="mx-auto rounded-t h-[calc(100vh-56px)] flex flex-col min-h-0 border border-gray-300">
             <div className="flex items-center justify-between bg-card-bg p-2 border-b border-gray-300">
                 <p className="font-title text-lg font-bold text-title-color">Garantía #{id}</p>
-                <PrimaryButton onClick={descargarPDF} text="Descargar" loading={loading} />
+                <PrimaryButton onClick={descargarPDF} text="Imprimir" loading={loading} />
             </div>
             <div className="flex-1 min-h-0 overflow-y-auto">
                 <Warranty id={id} warranty={warranty} />
