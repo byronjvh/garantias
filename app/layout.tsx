@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat, Poppins } from "next/font/google";
 import "./globals.css";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -24,12 +25,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${montserrat.variable} ${poppins.variable} antialiased h-svh`}
-      >
-        {children}
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
+        <body
+          className={`${montserrat.variable} ${poppins.variable} antialiased h-svh`}
+        >
+          {children}
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
