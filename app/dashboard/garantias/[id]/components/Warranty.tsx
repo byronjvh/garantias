@@ -64,11 +64,11 @@ export default function Warranty({ id, warranty }: Props) {
                 <p className="label col-span-2">Capacidad:</p> <p className="value col-span-2">{warranty?.producto.cargador.capacidad}</p>
                 <p className="label col-span-2">Notas:</p> <p className="value col-span-2">{warranty?.producto.cargador.notas}</p>
             </section >
-            <section className="warranty-section grid-rows-8">
+            <section className="warranty-section grid-rows-[repeat(3,1fr)_auto_1fr_auto]">
                 <p className="label col-span-4">Estado del Equipo</p> <p className="value col-span-8"></p>
                 <p className="label col-span-4">Número de serie:</p> <p className="value col-span-8">{warranty?.producto.serie}</p>
-                <p className="label col-span-12">Estado físico y Observaciones:</p> <p className="value col-span-12 row-span-2">{warranty?.producto.estado_fisico}</p>
-                <p className="label col-span-12">Detalle del problema o trabajo a realizar:</p> <p className="value col-span-12 row-span-2">{warranty?.producto.problema}</p>
+                <p className="label col-span-12">Estado físico y Observaciones:</p> <p className="value col-span-12">{warranty?.producto.estado_fisico}</p>
+                <p className="label col-span-12">Detalle del problema o trabajo a realizar:</p> <p className="value col-span-12">{warranty?.producto.problema}</p>
             </section>
             <section className="warranty-section">
                 <p className="label col-span-3">Firma del Cliente</p> <p className="value col-span-3"></p>
