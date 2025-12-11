@@ -51,4 +51,5 @@ enum Rol {
   ASESOR
   TECNICO
   TECNICO_2
+  TI
 }
