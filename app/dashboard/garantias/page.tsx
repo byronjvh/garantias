@@ -18,7 +18,7 @@ export default function GarantiasPage() {
         <>
             <header className="flex flex-col gap-4">
                 <div className="flex justify-between items-center">
-                    <h1 className="font-title font-bold text-lg">Lista de garantías</h1>
+                    <h1 className="font-title font-bold text-lg">Garantías de tiendas</h1>
                     <PrimaryButton text="Crear Nueva" />
                 </div>
                 <div className="flex justify-between bg-card-bg p-2 rounded text-sm border border-gray-300">
@@ -43,8 +43,8 @@ export default function GarantiasPage() {
                                 </div>
                                 <p className="flex items-center justify-center">{warranty.fecha} </p>
                                 <div className="flex items-center justify-end gap-2">
-                                    <button className="bg-accent p-1 text-white rounded cursor-pointer"><Pencil size={18} /></button>
-                                    <button className="bg-red-500 p-1 text-white rounded cursor-pointer"><Trash2 size={18} /></button>
+                                    <button className="bg-accent p-1 text-white rounded cursor-pointer"><Pencil size={20} /></button>
+                                    <button className="bg-red-500 p-1 text-white rounded cursor-pointer"><Trash2 size={20} /></button>
                                 </div>
                             </article>
                         </li>
