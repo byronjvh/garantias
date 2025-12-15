@@ -24,7 +24,7 @@ export default function WarrantyPage({ params }: Props) {
 
         const html2pdf = (await import("html2pdf.js")).default;
 
-        let opt = {
+        const opt = {
             filename: `Garantía_${warranty?.nombre}.pdf`,
             image: { type: "webp" as const, quality: 1 },
             html2canvas: { scale: 3 },
