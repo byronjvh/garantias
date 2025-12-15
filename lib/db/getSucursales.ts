@@ -1,9 +1,17 @@
-// lib/getSucursales.ts
-import { cache } from "react"
-import { prisma } from "@/lib/prisma"
+import { cache } from "react";
+import { prisma } from "@/lib/prisma";
+import { Sucursal } from "@/types";
 
-export const getSucursales = cache(async () => {
-    return prisma.sucursal.findMany({
-        orderBy: { nombre: "asc" },
-    })
-})
+export const getSucursales = cache(async (): Promise<Sucursal[]> => {
+    const sucursales = await prisma.sucursal.findMany({
+        select: {
+            id: true,
+            nombre: true,
+        },
+        orderBy: {
+            nombre: "asc",
+        },
+    });
+
+    return sucursales;
+});
