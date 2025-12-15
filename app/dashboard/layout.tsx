@@ -1,10 +1,8 @@
-import { createUserIfNeeded } from "@/lib/auth/createUserIfNeeded";
 import { SignOutButton } from "@clerk/nextjs";
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { FileText, ShieldCheck } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
     title: "Create Next App",
@@ -17,9 +15,7 @@ export default async function DashboardLayout({
     children: React.ReactNode;
 }>) {
 
-    const { userId } = await auth();
-
-    await createUserIfNeeded();
+    await auth();
 
     return (
         <div className="h-svh flex flex-col text-p-color">
@@ -31,7 +27,7 @@ export default async function DashboardLayout({
                         <li className=""><Link href="" className="p-2 w-full hover:bg-gray-300 inline-flex items-center gap-2 text-lg rounded"><span><FileText /></span>{`Reportes (pronto...)`}</Link></li>
                     </ul>
                 </aside>
-                <main className="font-p p-6 w-full flex flex-col gap-4 overflow-hidden ">
+                <main className="font-p p-6 w-full flex flex-col gap-4 overflow-hidden bg-linear-to-b from-gray-100 to-gray-200 ">
                     {children}
                 </main>
             </div>
