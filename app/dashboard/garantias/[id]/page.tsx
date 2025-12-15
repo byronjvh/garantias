@@ -44,7 +44,9 @@ export default function WarrantyPage({ params }: Props) {
         <div className="mx-auto rounded-t h-[calc(100vh-56px)] flex flex-col min-h-0 border border-gray-300">
             <div className="flex items-center justify-between bg-card-bg p-2 border-b border-gray-300">
                 <p className="font-title text-lg font-bold text-title-color">Garantía #{id}</p>
-                <PrimaryButton onClick={descargarPDF} text="Imprimir" loading={loading} />
+                <PrimaryButton onClick={descargarPDF} loading={loading}>
+                    Imprimir
+                </PrimaryButton>
             </div>
             <div className="flex-1 min-h-0 overflow-y-auto">
                 <Warranty id={id} warranty={warranty} />

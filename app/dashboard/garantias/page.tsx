@@ -19,7 +19,9 @@ export default function GarantiasPage() {
             <header className="flex flex-col gap-4">
                 <div className="flex justify-between items-center">
                     <h1 className="font-title font-bold text-lg">Garantías de tiendas</h1>
-                    <PrimaryButton text="Crear Nueva" />
+                    <PrimaryButton>
+                        Crear Nueva
+                    </PrimaryButton>
                 </div>
                 <div className="flex justify-between bg-card-bg p-2 rounded text-sm border border-gray-300">
                     <select id="filter-select">
