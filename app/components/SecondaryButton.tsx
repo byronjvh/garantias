@@ -7,7 +7,7 @@ interface PrimaryButtonProps
     loading?: boolean;
 }
 
-export default function SecondaryButton({
+export default function PrimaryButton({
     children,
     onClick,
     loading = false,
@@ -21,7 +21,7 @@ export default function SecondaryButton({
             onClick={onClick}
             disabled={disabled || loading}
             className={`relative rounded px-4 py-2 font-semibold transition-colors
-                bg-accent text-white hover:bg-accent/90 cursor-pointer
+                border border-gray-300 hover:bg-gray-100 cursor-pointer
                 disabled:opacity-50 disabled:cursor-not-allowed
                 ${className}`}
         >
