@@ -1,8 +1,12 @@
+import { getSucursales } from "@/lib/db/getSucursales";
 import { SignOutButton } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import { FileText, ShieldCheck } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { DashboardProvider } from "./DashboardContext";
+import { redirect } from "next/navigation";
+import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
     title: "Create Next App",
@@ -10,28 +14,32 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardLayout({
-    children,
+    children
 }: Readonly<{
     children: React.ReactNode;
 }>) {
 
     await auth();
 
+    const sucursales = await getSucursales();
+
     return (
-        <div className="h-svh flex flex-col text-p-color">
-            <header className="flex justify-between items-center w-full h-14 p-4 bg-card-bg z-10 shadow "><a href=""><img src="/logo.png" alt="logo" className="h-8 object-contain" /></a> <SignOutButton redirectUrl="/sign-in" /></header>
-            <div className="flex flex-1 h-[calc(100svh-60px)]">
-                <aside className="px-2 pt-4 h-full w-full max-w-[250px] bg-card-bg">
-                    <ul className="flex flex-col gap-2">
-                        <li className=""><Link href="/dashboard/garantias" className="p-2 w-full hover:bg-gray-300 inline-flex items-center gap-2 text-lg rounded"><span><ShieldCheck /></span>Garantías</Link></li>
-                        <li className=""><Link href="" className="p-2 w-full hover:bg-gray-300 inline-flex items-center gap-2 text-lg rounded"><span><FileText /></span>{`Reportes (pronto...)`}</Link></li>
-                    </ul>
-                </aside>
-                <main className="font-p p-6 w-full flex flex-col gap-4 overflow-hidden bg-linear-to-b from-gray-100 to-gray-200 ">
-                    {children}
-                </main>
+        <DashboardProvider value={{ sucursales }}>
+            <div className="h-svh flex flex-col text-p-color">
+                <header className="flex justify-between items-center w-full h-14 p-4 bg-card-bg z-10 shadow"><a href=""><img src="/Tukomer_2.png" alt="logo" className="h-10 object-contain" /></a> <SignOutButton redirectUrl="/sign-in" /></header>
+                <div className="flex flex-1 h-[calc(100svh-60px)]">
+                    <aside className="px-2 pt-4 h-full w-full max-w-[250px] bg-card-bg">
+                        <ul className="flex flex-col gap-2">
+                            <li className=""><Link href="/dashboard/garantias" className="p-2 w-full hover:bg-gray-300 inline-flex items-center gap-2 text-lg rounded"><span><ShieldCheck /></span>Garantías</Link></li>
+                            <li className=""><Link href="" className="p-2 w-full hover:bg-gray-300 inline-flex items-center gap-2 text-lg rounded"><span><FileText /></span>{`Reportes (pronto...)`}</Link></li>
+                        </ul>
+                    </aside>
+                    <main className="font-p p-6 w-full flex flex-col gap-4 overflow-hidden bg-linear-to-b from-gray-100 to-gray-200 ">
+                        {children}
+                    </main>
+                </div>
             </div>
-        </div>
+        </DashboardProvider>
 
     );
 }
