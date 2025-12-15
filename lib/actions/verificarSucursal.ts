@@ -11,8 +11,6 @@ export async function verificarSucursal(id: string) {
         select: { sucursalId: true },
     });
 
-    console.log("funciona?")
-
     return {
         success: true,
         tieneSucursal: !!usuario?.sucursalId,
