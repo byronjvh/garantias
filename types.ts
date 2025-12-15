@@ -46,6 +46,11 @@ export interface Warranty {
     producto: Producto;
 }
 
+export type Sucursal = {
+    id: number;
+    nombre: string;
+};
+
 export type PageProps = {
     params: {
         id: string;
