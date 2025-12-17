@@ -21,6 +21,23 @@ export async function proxy(req: NextRequest) {
         },
     });
 
+    // 3️⃣ Usuario autenticado intentando entrar a /sign-in
+    if (session && isPublicRoute) {
+        const userId = session.user.id;
+        const { tieneSucursal } = await verificarSucursal(userId);
+
+        if (tieneSucursal) {
+            return NextResponse.redirect(
+                new URL("/dashboard/garantias", req.url)
+            );
+        }
+
+        return NextResponse.redirect(
+            new URL("/dashboard", req.url)
+        );
+    }
+
+
 
     // 🚫 3️⃣ No autenticado
     if (!isPublicRoute && !session) {
@@ -30,8 +47,8 @@ export async function proxy(req: NextRequest) {
     // ✅ 4️⃣ Autenticado
     if (session && !isPublicRoute) {
         const userId = session.user.id;
-
         const { tieneSucursal } = await verificarSucursal(userId);
+
 
         if (!tieneSucursal) {
             if (isSucursalSelectionRoute) {
@@ -46,6 +63,21 @@ export async function proxy(req: NextRequest) {
                 new URL("/dashboard/garantias", req.url)
             );
         }
+    }
+
+    if (session && pathname === "/sig-in") {
+        const userId = session.user.id;
+        const { tieneSucursal } = await verificarSucursal(userId);
+
+        if (tieneSucursal) {
+            return NextResponse.redirect(
+                new URL("/dashboard/garantias", req.url)
+            );
+        }
+
+        return NextResponse.redirect(
+            new URL("/dashboard", req.url)
+        );
     }
 
     return NextResponse.next();

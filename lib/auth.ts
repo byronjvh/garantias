@@ -10,9 +10,11 @@ export const auth = betterAuth({
     },
     socialProviders: {
         microsoft: {
-            clientId: process.env.AZURE_AD_CLIENT_ID ?? "",
-            clientSecret: process.env.AZURE_AD_CLIENT_SECRET ?? "",
-            tenantId: process.env.AZURE_AD_TENANT_ID ?? "",
+            clientId: process.env.AZURE_AD_CLIENT_ID as string,
+            clientSecret: process.env.AZURE_AD_CLIENT_SECRET as string,
+            tenantId: 'common',
+            authority: "https://login.microsoftonline.com",
+            prompt: "select_account",
         },
     },
 });
