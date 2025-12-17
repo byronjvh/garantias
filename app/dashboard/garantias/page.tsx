@@ -1,19 +1,14 @@
 "use client"
-import { useEffect, useState } from "react";
-import garantiasJson from "../../../GuaranteesExamples.json"; // requiere "resolveJsonModule": true en tsconfig
 import { Pencil, Trash2 } from "lucide-react";
-import WarrantyStatus from "../components/WarrantyStatus";
-import type { Warranty } from "../../../types";
 import Link from "next/link";
 import PrimaryButton from "@/app/components/PrimaryButton";
+import { useDashboard } from "../DashboardContext";
+import WarrantyStatus from "../components/WarrantyStatus";
+import { EstadoGarantia } from "@/types";
 
 
 export default function GarantiasPage() {
-    const [warrantyList, setWarrantyList] = useState<Warranty[]>();
-    useEffect(() => {
-        setWarrantyList(garantiasJson as Warranty[]);
-    }, [])
-
+    const { garantias } = useDashboard()
     return (
         <>
             <header className="flex flex-col gap-4">
@@ -31,19 +26,19 @@ export default function GarantiasPage() {
             </header>
             <ul className="bg-card-bg flex flex-col gap-4 p-2 py-4 rounded border border-gray-300">
                 {
-                    warrantyList?.map((warranty) => (
-                        <li key={warranty.id}>
+                    garantias?.map((garantia) => (
+                        <li key={garantia.id}>
                             <article className="p-2 grid grid-cols-[minmax(100px,340px)_1fr_1fr_1fr] gap-2 text-sm">
                                 <div className="flex flex-col justify-center w-full max-w-[340px] gap-0.5 ">
-                                    <Link href={`/dashboard/garantias/${warranty.id}`}>
-                                        <h4 className="font-bold text-accent-2">{warranty.nombre}</h4>
-                                        <p className="text-xs ">{warranty.descripcion_corta}</p>
+                                    <Link href={`/dashboard/garantias/${garantia.id}`}>
+                                        <h4 className="font-bold text-accent-2">{garantia.contacto.nombre}</h4>
+                                        <p className="text-xs ">{garantia.resumen}</p>
                                     </Link>
                                 </div>
                                 <div className="flex items-center justify-center">
-                                    <WarrantyStatus status={warranty.status} />
+                                    <WarrantyStatus estado={garantia.estadoActual} />
                                 </div>
-                                <p className="flex items-center justify-center">{warranty.fecha} </p>
+                                <p className="flex items-center justify-center">{garantia.fechaIngreso.toLocaleDateString("es-CR")} </p>
                                 <div className="flex items-center justify-end gap-2">
                                     <button className="bg-accent p-1 text-white rounded cursor-pointer"><Pencil size={20} /></button>
                                     <button className="bg-red-500 p-1 text-white rounded cursor-pointer"><Trash2 size={20} /></button>

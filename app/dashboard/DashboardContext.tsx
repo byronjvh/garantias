@@ -1,10 +1,19 @@
 "use client";
 
-import { Sucursal } from "@/types";
+import { ContactoGarantia, EstadoGarantia, Sucursal } from "@/types";
 import { createContext, useContext } from "react";
 
 type DashboardContextType = {
-    sucursales: Sucursal[]
+    sucursales: Sucursal[],
+    garantias?: {
+        id: number;
+        consecutivo: string;
+        resumen: string;
+        estadoActual: EstadoGarantia;
+        fechaIngreso: Date;
+        contacto: ContactoGarantia,
+        sucursal: { nombre: string };
+    }[];
 };
 
 const DashboardContext = createContext<DashboardContextType | null>(null);

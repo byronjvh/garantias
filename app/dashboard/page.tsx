@@ -7,14 +7,14 @@ import { useConfirm } from "../hooks/useConfirm";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import PrimaryButton from "../components/PrimaryButton";
 import { setUsuarioSucursal } from "@/lib/actions/setUsuarioSucursal";
-import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-// import { verificarSucursal } from "@/lib/actions/verificarSucursal";
+import { authClient } from "@/lib/auth-client";
 
 export default function DashboardHome() {
     const { sucursales } = useDashboard()
     const [selectedId, setSelectedId] = useState<number | null>(null)
-    const { user } = useUser()
+    const { data } = authClient.useSession()
+    const user = data?.user
     const router = useRouter()
     const {
         open,
@@ -31,7 +31,7 @@ export default function DashboardHome() {
     async function onConfirm() {
         if (!selectedId || !user) return
         await setUsuarioSucursal({
-            clerkId: user.id,
+            authId: user.id,
             sucursalId: selectedId,
         })
 

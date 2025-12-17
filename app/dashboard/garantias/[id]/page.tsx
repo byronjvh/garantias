@@ -1,6 +1,5 @@
 "use client"
 
-import { warrantyList } from "@/app/data/WarrantyList"
 import Warranty from "./components/Warranty"
 import "./page.module.css"
 import PrimaryButton from "@/app/components/PrimaryButton"

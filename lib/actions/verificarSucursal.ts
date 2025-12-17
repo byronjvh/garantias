@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 export async function verificarSucursal(id: string) {
 
     const usuario = await prisma.usuario.findUnique({
-        where: { clerkId: id },
+        where: { authId: id },
         select: { sucursalId: true },
     });
 

@@ -8,34 +8,91 @@ datasource db {
 }
 
 model Usuario {
-  id         Int               @id @default(autoincrement())
-  clerkId    String            @unique
-  nombre     String
-  email      String            @unique
-  banned     Boolean           @default(false)
-  creadoEn   DateTime          @default(now())
+  id       Int      @id @default(autoincrement())
+  authId   String   @unique
+  nombre   String
+  email    String   @unique
+  banned   Boolean  @default(false)
+  creadoEn DateTime @default(now())
+
   sucursalId Int?
-  sucursal   Sucursal?         @relation(fields: [sucursalId], references: [id])
-  roles      UsuarioSucursal[]
+  sucursal   Sucursal? @relation(fields: [sucursalId], references: [id])
+
+  roles UsuarioSucursal[]
 }
 
 model Sucursal {
-  id        Int               @id @default(autoincrement())
-  nombre    String            @unique
+  id        Int     @id @default(autoincrement())
+  nombre    String  @unique
+  prefijo   String  @unique
   direccion String?
+
   miembros  Usuario[]
   usuarios  UsuarioSucursal[]
+  garantias Garantia[]
 }
 
 model UsuarioSucursal {
-  id         Int      @id @default(autoincrement())
+  id         Int @id @default(autoincrement())
   usuarioId  Int
   sucursalId Int
   rol        Rol
-  sucursal   Sucursal @relation(fields: [sucursalId], references: [id])
-  usuario    Usuario  @relation(fields: [usuarioId], references: [id])
+
+  usuario  Usuario  @relation(fields: [usuarioId], references: [id])
+  sucursal Sucursal @relation(fields: [sucursalId], references: [id])
 
   @@unique([usuarioId, sucursalId])
+}
+
+enum EstadoGarantia {
+  INGRESADA
+  EN_REVISION_SUCURSAL
+  ESCALADA_A_CEDI
+  EN_REVISION_CEDI
+  ENVIADA_PROVEEDOR
+  EN_REPARACION
+  LISTA_PARA_RETIRO
+  DENEGADA
+  CERRADA
+}
+
+model Garantia {
+  id           Int            @id @default(autoincrement())
+  consecutivo  String         @unique
+  resumen      String
+  descripcion  String
+  estadoActual EstadoGarantia
+  factura      String?
+
+  contacto Json
+  producto Json
+
+  sucursalId      Int
+  sucursalNombre  String
+  sucursalPrefijo String
+  sucursal        Sucursal @relation(fields: [sucursalId], references: [id])
+
+  cuentaDuenaId  Int
+  ingresadoPorId Int
+
+  fechaIngreso DateTime @default(now())
+  creadoEn     DateTime @default(now())
+
+  historial HistorialGarantia[]
+}
+
+model HistorialGarantia {
+  id         Int            @id @default(autoincrement())
+  garantiaId Int
+  estado     EstadoGarantia
+
+  usuarioId     Int
+  usuarioRol    Rol
+  usuarioNombre String
+
+  fecha DateTime
+
+  garantia Garantia @relation(fields: [garantiaId], references: [id], onDelete: Cascade)
 }
 
 enum Rol {
@@ -44,4 +101,67 @@ enum Rol {
   TECNICO
   TECNICO_2
   TI
+}
+
+model User {
+  id            String    @id
+  name          String
+  email         String
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
 }

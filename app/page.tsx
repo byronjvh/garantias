@@ -1,8 +1,13 @@
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { auth } from "@clerk/nextjs/server";
 
 export default async function HomePage() {
-  const { userId } = await auth();
+  const session = await auth.api.getSession({
+    headers: await headers() // you need to pass the headers object.
+  })
+
+  const userId = session?.user.id
 
   if (!userId) redirect("/sign-in");
 

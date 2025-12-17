@@ -1,12 +1,13 @@
 import { getSucursales } from "@/lib/db/getSucursales";
-import { SignOutButton } from "@clerk/nextjs";
-import { auth } from "@clerk/nextjs/server";
 import { FileText, ShieldCheck } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { DashboardProvider } from "./DashboardContext";
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
+import { createUser } from "@/lib/db/createUser";
+import { getGarantiasList } from "@/lib/db/getGarantiasList";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export const metadata: Metadata = {
     title: "Create Next App",
@@ -18,15 +19,28 @@ export default async function DashboardLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const session = await auth.api.getSession({
+        headers: await headers() // you need to pass the headers object.
+    })
 
-    await auth();
+    const user = session?.user
+
+    if (!user) {
+        redirect("/sign-in")
+    }
+
+    try {
+        await createUser(user)
+    } catch (error) {
+        redirect("/error/db")
+    }
 
     const sucursales = await getSucursales();
-
+    const { items: garantias } = await getGarantiasList(1);
     return (
-        <DashboardProvider value={{ sucursales }}>
+        <DashboardProvider value={{ sucursales, garantias }}>
             <div className="h-svh flex flex-col text-p-color">
-                <header className="flex justify-between items-center w-full h-14 p-4 bg-card-bg z-10 shadow"><a href=""><img src="/Tukomer_2.png" alt="logo" className="h-10 object-contain" /></a> <SignOutButton redirectUrl="/sign-in" /></header>
+                <header className="flex justify-between items-center w-full h-14 p-4 bg-card-bg z-10 shadow"><a href=""><img src="/Tukomer_2.png" alt="logo" className="h-10 object-contain" /></a></header>
                 <div className="flex flex-1 h-[calc(100svh-60px)]">
                     <aside className="px-2 pt-4 h-full w-full max-w-[250px] bg-card-bg">
                         <ul className="flex flex-col gap-2">

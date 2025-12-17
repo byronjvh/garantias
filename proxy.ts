@@ -1,64 +1,55 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server"
-import { NextResponse } from 'next/server'
-import { verificarSucursal } from './lib/actions/verificarSucursal' // 👈 Importar la Server Action
+import { NextResponse, NextRequest } from "next/server";
+import { verificarSucursal } from "@/lib/actions/verificarSucursal";
+import { auth } from "./lib/auth";
 
-// --- Rutas Públicas (No requieren Auth)
-const isPublicRoute = createRouteMatcher([
-    "/sign-in(.*)",
-    "/api/webhooks/clerk(.*)"
-])
+export async function proxy(req: NextRequest) {
+    const pathname = req.nextUrl.pathname;
 
-// --- Rutas que no requieren sucursal, pero sí Auth (p. ej., la página de selección)
-// Asumimos que la página de selección de sucursal es la raíz del dashboard: /dashboard
-const isSucursalSelectionRoute = createRouteMatcher([
-    "/dashboard" // La ruta de tu componente DashboardHome
-])
-
-export default clerkMiddleware(async (auth, req) => {
-    const { userId, redirectToSignIn } = await auth()
-    const url = req.nextUrl.pathname // Obtener la ruta actual
-
-    // 1. Lógica de Autenticación (Clerk Standard)
-    if (!isPublicRoute(req) && !userId) {
-        return redirectToSignIn()
+    // 🔒 1️⃣ Auth callbacks NUNCA se tocan
+    if (pathname.startsWith("/api/auth")) {
+        return NextResponse.next();
     }
 
-    if (userId && !isPublicRoute(req)) {
+    const isPublicRoute = pathname.startsWith("/sign-in");
+    const isSucursalSelectionRoute = pathname === "/dashboard";
 
-        try {
-            const result = await verificarSucursal(userId)
-
-            const tieneSucursal = result.tieneSucursal
-
-            if (!tieneSucursal) {
-                if (isSucursalSelectionRoute(req)) {
-                    return NextResponse.next()
-                }
+    // 🔐 2️⃣ Ahora sí, sesión
+    const { getSession } = auth.api;
+    const session = await getSession({
+        headers: {
+            cookie: req.headers.get("cookie") ?? "",
+        },
+    });
 
 
-                const redirectUrl = new URL("/dashboard", req.url);
-                return NextResponse.redirect(redirectUrl)
+    // 🚫 3️⃣ No autenticado
+    if (!isPublicRoute && !session) {
+        return NextResponse.redirect(new URL("/sign-in", req.url));
+    }
+
+    // ✅ 4️⃣ Autenticado
+    if (session && !isPublicRoute) {
+        const userId = session.user.id;
+
+        const { tieneSucursal } = await verificarSucursal(userId);
+
+        if (!tieneSucursal) {
+            if (isSucursalSelectionRoute) {
+                return NextResponse.next();
             }
 
-
-            if (tieneSucursal) {
-                if (isSucursalSelectionRoute(req)) {
-                    const redirectUrl = new URL("/dashboard/garantias", req.url);
-                    return NextResponse.redirect(redirectUrl)
-                }
-            }
-
-            return NextResponse.next()
-
-        } catch (error) {
-            console.error("Error verificando sucursal en middleware:", error)
-            // Opcional: Redirigir a una página de error o permitir el paso si la DB falla
-            return NextResponse.next()
+            return NextResponse.redirect(new URL("/dashboard", req.url));
         }
 
+        if (tieneSucursal && isSucursalSelectionRoute) {
+            return NextResponse.redirect(
+                new URL("/dashboard/garantias", req.url)
+            );
+        }
     }
 
-})
+    return NextResponse.next();
+}
 
 export const config = {
     matcher: [

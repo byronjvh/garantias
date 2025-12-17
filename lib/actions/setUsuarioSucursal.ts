@@ -5,20 +5,20 @@ import { Rol } from "@prisma/client"
 
 
 interface Params {
-    clerkId: string
+    authId: string
     sucursalId: number
     rol?: Rol
 }
 
 export async function setUsuarioSucursal({
-    clerkId,
+    authId,
     sucursalId,
     rol = Rol.ASESOR,
 }: Params) {
     return prisma.$transaction(async (tx) => {
         // 1️⃣ Buscar usuario por clerkId
         const usuario = await tx.usuario.findUnique({
-            where: { clerkId },
+            where: { authId },
             select: {
                 id: true,
                 sucursalId: true,
