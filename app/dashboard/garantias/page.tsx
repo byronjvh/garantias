@@ -1,10 +1,8 @@
 "use client"
-import { Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
 import PrimaryButton from "@/app/components/PrimaryButton";
 import { useDashboard } from "../DashboardContext";
 import WarrantyStatus from "../components/WarrantyStatus";
-import { EstadoGarantia } from "@/types";
 
 
 export default function GarantiasPage() {
@@ -18,7 +16,8 @@ export default function GarantiasPage() {
                         Crear Nueva
                     </PrimaryButton>
                 </div>
-                <div className="flex justify-between bg-card-bg p-2 rounded text-sm border border-gray-300">
+                <div className="flex gap-4 bg-card-bg p-4 rounded text-sm border border-gray-300">
+                    <input className="w-5 h-5" type="checkbox" name="selectAll" id="selectAll" />
                     <select id="filter-select">
                         <option value="">Filtrar por... </option>
                     </select>
@@ -28,21 +27,23 @@ export default function GarantiasPage() {
                 {
                     garantias?.map((garantia) => (
                         <li key={garantia.id}>
-                            <article className="p-2 grid grid-cols-[minmax(100px,340px)_1fr_1fr_1fr] gap-2 text-sm">
-                                <div className="flex flex-col justify-center w-full max-w-[340px] gap-0.5 ">
+                            <article className="p-2 grid grid-cols-[repeat(2,max-content)_minmax(100px,340px)_repeat(4,1fr)] gap-4 text-sm items-center place-items-center">
+                                <div>
+                                    <input className="w-5 h-5" type="checkbox" name="selectWarranty" id="selectWarranty" />
+                                </div>
+                                <p className="">{garantia.consecutivo}</p>
+                                <div className="w-full max-w-[340px] gap-0.5 ">
                                     <Link href={`/dashboard/garantias/${garantia.id}`}>
                                         <h4 className="font-bold text-accent-2">{garantia.contacto.nombre}</h4>
-                                        <p className="text-xs ">{garantia.resumen}</p>
+                                        <p className=" ">{garantia.resumen}</p>
                                     </Link>
                                 </div>
-                                <div className="flex items-center justify-center">
+                                <p>{garantia.producto.descripcion}</p>
+                                <p>{garantia.sucursal.nombre}</p>
+                                <div className="">
                                     <WarrantyStatus estado={garantia.estadoActual} />
                                 </div>
-                                <p className="flex items-center justify-center">{garantia.fechaIngreso.toLocaleDateString("es-CR")} </p>
-                                <div className="flex items-center justify-end gap-2">
-                                    <button className="bg-accent p-1 text-white rounded cursor-pointer"><Pencil size={20} /></button>
-                                    <button className="bg-red-500 p-1 text-white rounded cursor-pointer"><Trash2 size={20} /></button>
-                                </div>
+                                <p className="">{garantia.fechaIngreso.toLocaleDateString("es-CR")} </p>
                             </article>
                         </li>
                     ))

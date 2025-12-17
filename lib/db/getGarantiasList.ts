@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { parseContactoGarantia } from "@/lib/normalizers/parseContactoGarantia";
 import type { EstadoGarantia } from "@/types";
+import { parseProductoGarantia } from "../normalizers/parseProductoGarantia";
 
 const PAGE_SIZE = 10;
 
@@ -23,6 +24,7 @@ export async function getGarantiasList(page: number = 1) {
                         nombre: true,
                     },
                 },
+                producto: true
             },
             orderBy: {
                 fechaIngreso: "desc",
@@ -41,6 +43,7 @@ export async function getGarantiasList(page: number = 1) {
         sucursal: {
             nombre: g.sucursal.nombre,
         },
+        producto: parseProductoGarantia(g.producto)
     }));
 
     return {
