@@ -1,17 +1,36 @@
 import { prisma } from "@/lib/prisma";
 import { parseContactoGarantia } from "@/lib/normalizers/parseContactoGarantia";
-import type { EstadoGarantia } from "@/types";
 import { parseProductoGarantia } from "../normalizers/parseProductoGarantia";
+import type { EstadoGarantia } from "@/types";
+
+type GetGarantiasParams = {
+    page?: number;
+    sucursalActualId?: number; // solo para roles NO nivel 2
+    canViewAll: boolean;
+};
 
 const PAGE_SIZE = 10;
 
-export async function getGarantiasList(page: number = 1) {
+export async function getGarantiasList({
+    page = 1,
+    sucursalActualId,
+    canViewAll,
+}: GetGarantiasParams) {
     const skip = (page - 1) * PAGE_SIZE;
+
+    // 🔐 control de visibilidad
+    const where = canViewAll
+        ? {}
+        : {
+            sucursalActualId,
+        };
 
     const [itemsRaw, total] = await Promise.all([
         prisma.garantia.findMany({
             skip,
             take: PAGE_SIZE,
+            where,
+            orderBy: { fechaIngreso: "desc" },
             select: {
                 id: true,
                 consecutivo: true,
@@ -19,31 +38,32 @@ export async function getGarantiasList(page: number = 1) {
                 estadoActual: true,
                 fechaIngreso: true,
                 contacto: true,
-                sucursal: {
+                producto: true,
+                sucursalActual: {
                     select: {
+                        id: true,
                         nombre: true,
+                        prefijo: true,
                     },
                 },
-                producto: true
-            },
-            orderBy: {
-                fechaIngreso: "desc",
             },
         }),
-        prisma.garantia.count(),
+        prisma.garantia.count({ where }),
     ]);
 
     const items = itemsRaw.map((g) => ({
         id: g.id,
-        consecutivo: g.consecutivo,
+        consecutivo: g.consecutivo ?? undefined,
         resumen: g.resumen,
         estadoActual: g.estadoActual as EstadoGarantia,
         fechaIngreso: g.fechaIngreso,
         contacto: parseContactoGarantia(g.contacto),
+        producto: parseProductoGarantia(g.producto),
         sucursal: {
-            nombre: g.sucursal.nombre,
+            id: g.sucursalActual.id,
+            nombre: g.sucursalActual.nombre,
+            prefijo: g.sucursalActual.prefijo,
         },
-        producto: parseProductoGarantia(g.producto)
     }));
 
     return {

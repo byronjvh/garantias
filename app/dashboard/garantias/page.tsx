@@ -2,54 +2,183 @@
 import Link from "next/link";
 import PrimaryButton from "@/app/components/PrimaryButton";
 import { useDashboard } from "../DashboardContext";
-import WarrantyStatus from "../components/WarrantyStatus";
+import WarrantyStatus, { ESTADO_GARANTIA_OPTION_STYLE } from "../components/WarrantyStatus";
+import { ContactoGarantia, EstadoGarantia, ESTADOS_GARANTIA, Garantia, ProductoGarantia } from "@/types";
+import { humanizeEstadoGarantia } from "@/app/utils/humanizeEstadoGarantia";
+import { useEffect, useState } from "react";
+import { Search } from "lucide-react";
+import { getGarantiasAction } from "@/lib/actions/getGarantiasAction";
+import { getRol } from "@/lib/actions/getRol";
+import { Rol } from "@/lib/generated/prisma/enums";
 
+
+export type GarantiaItem = {
+    id: number;
+    consecutivo?: string
+    resumen: string;
+    estadoActual: EstadoGarantia;
+    fechaIngreso: Date;
+    contacto: ContactoGarantia;
+    producto: ProductoGarantia;
+    sucursal: {
+        nombre: string;
+    };
+};
 
 export default function GarantiasPage() {
-    const { garantias } = useDashboard()
+    const { sucursales } = useDashboard();
+    const [items, setItems] = useState<GarantiaItem[]>([]);
+    const [page, setPage] = useState(1);
+    const [statusToFilter, setStatusToFilter] = useState<EstadoGarantia | null>(null);
+    const [sucursalActualId, setSucursalActualId] = useState<number | undefined>(
+        sucursales[0]?.id
+    );
+
+    const handleStatusToFilter = (
+        e: React.ChangeEvent<HTMLSelectElement>
+    ) => {
+        const status = e.target.value as EstadoGarantia;
+        if (!status) return setStatusToFilter(null)
+        setStatusToFilter(status)
+    };
+
+    useEffect(() => {
+        let cancelled = false;
+
+        (async () => {
+            const { rol } = await getRol();
+
+            const canViewAll =
+                rol?.rol === Rol.TECNICO_2 || rol?.rol === Rol.TI;
+
+            const { items } = await getGarantiasAction({
+                page,
+                canViewAll,
+                sucursalActualId: canViewAll ? undefined : sucursalActualId,
+            });
+
+            if (!cancelled) {
+                setItems(items);
+            }
+        })();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [page, sucursalActualId]);
+
     return (
         <>
             <header className="flex flex-col gap-4">
                 <div className="flex justify-between items-center">
-                    <h1 className="font-title font-bold text-lg">Garantías de tiendas</h1>
-                    <PrimaryButton>
+                    <h1 className="font-title font-bold text-xl">Garantías de tiendas</h1>
+                    <PrimaryButton onClick={() => {
+
+                    }}>
                         Crear Nueva
                     </PrimaryButton>
                 </div>
-                <div className="flex gap-4 bg-card-bg p-4 rounded text-sm border border-gray-300">
-                    <input className="w-5 h-5" type="checkbox" name="selectAll" id="selectAll" />
-                    <select id="filter-select">
-                        <option value="">Filtrar por... </option>
+                <div className="grid grid-cols-4 gap-4 center">
+                    <div className="flex items-center rounded bg-card-bg border border-gray-400/60 focus-within:ring-2 focus-within:ring-primary/30">
+                        <Search size={18} className="ml-2 opacity-60" />
+                        <input
+                            className="p-2 w-full focus:outline-none bg-transparent"
+                            placeholder="Buscar por producto, cliente o caso"
+                            type="text"
+                        />
+                    </div>
+                    <select
+                        onChange={handleStatusToFilter}
+                        className="px-3 py-2 rounded cursor-pointer bg-card-bg border border-gray-400/60 focus:ring-2 focus:ring-primary/30"
+                    >
+                        <option value="" className="capitalize bg-card-bg">Todos los Estados</option>
+                        {
+                            ESTADOS_GARANTIA?.map((estado, i) => (
+                                <option className={`bg-card-bg ${ESTADO_GARANTIA_OPTION_STYLE[estado]}`} key={i}>
+                                    {humanizeEstadoGarantia(estado)}
+                                </option>
+                            ))
+                        }
                     </select>
+                    <select
+                        onChange={handleStatusToFilter}
+                        className="px-3 py-2 rounded cursor-pointer bg-card-bg border border-gray-400/60 focus:ring-2 focus:ring-primary/30"
+                    >
+                        <option value="" className="bg-card-bg" >Todas las Tiendas</option>
+                        {
+                            sucursales?.map((sucursal) => (
+                                <option className="bg-card-bg" key={sucursal.id}>
+                                    {sucursal.nombre}
+                                </option>
+                            ))
+                        }
+                    </select>
+                    <div>
+                        <span>tag</span>
+                    </div>
                 </div>
             </header>
-            <ul className="bg-card-bg flex flex-col gap-4 p-2 py-4 rounded border border-gray-300">
-                {
-                    garantias?.map((garantia) => (
-                        <li key={garantia.id}>
-                            <article className="p-2 grid grid-cols-[repeat(2,max-content)_minmax(100px,340px)_repeat(4,1fr)] gap-4 text-sm items-center place-items-center">
-                                <div>
-                                    <input className="w-5 h-5" type="checkbox" name="selectWarranty" id="selectWarranty" />
-                                </div>
-                                <p className="">{garantia.consecutivo}</p>
-                                <div className="w-full max-w-[340px] gap-0.5 ">
-                                    <Link href={`/dashboard/garantias/${garantia.id}`}>
-                                        <h4 className="font-bold text-accent-2">{garantia.contacto.nombre}</h4>
-                                        <p className=" ">{garantia.resumen}</p>
-                                    </Link>
-                                </div>
-                                <p>{garantia.producto.descripcion}</p>
-                                <p>{garantia.sucursal.nombre}</p>
-                                <div className="">
-                                    <WarrantyStatus estado={garantia.estadoActual} />
-                                </div>
-                                <p className="">{garantia.fechaIngreso.toLocaleDateString("es-CR")} </p>
-                            </article>
-                        </li>
-                    ))
-                }
+            <div>
+                <div className="bg-card-bg p-4 border-x border-t border-gray-400/60 grid grid-cols-[.5fr_1fr_5fr_3fr_3fr_2fr_2fr] gap-6 text-sm uppercase items-center">
+                    <div>
+                        <input className="w-4 h-4 accent-primary cursor-pointer" type="checkbox" name="selectAll" id="selectAll" />
+                    </div>
+                    <p className="opacity-70">N° Caso</p>
+                    <p className="opacity-70">Descripción</p>
+                    <p className="opacity-70">Producto</p>
+                    <p className="opacity-70">Estado</p>
+                    <p className="opacity-70">Sucursal</p>
+                    <p className="opacity-70">Fecha</p>
+                </div>
+                <ul className="bg-card-bg flex flex-col gap-4 p-2 py-4 rounded-b border border-gray-400/60 <ul divide-y divide-gray-200">
+                    {
+                        items?.map((garantia) => (
+                            <li key={garantia.id}>
+                                <article className="p-2 py-4 grid grid-cols-[.5fr_1fr_5fr_3fr_3fr_2fr_2fr] gap-6 text-sm items-center">
+                                    <div>
+                                        <input className="w-4 h-4 accent-primary cursor-pointer" type="checkbox" name="selectWarranty" id="selectWarranty" />
+                                    </div>
+                                    <p className="">{garantia.consecutivo}</p>
+                                    <div className="w-full max-w-[340px] gap-0.5 ">
+                                        <Link
+                                            href={`/dashboard/garantias/${garantia.id}`}
+                                            className="block hover:underline"
+                                        >
+                                            <p className="font-medium leading-tight">
+                                                {garantia.resumen}
+                                            </p>
+                                            <p className="text-xs opacity-70">
+                                                {garantia.contacto.nombre}
+                                            </p>
+                                        </Link>
+                                    </div>
+                                    <p>{garantia.producto.descripcion}</p>
+                                    <div className="">
+                                        <WarrantyStatus estado={garantia.estadoActual} />
+                                    </div>
+                                    <p>{garantia.sucursal.nombre}</p>
+                                    <div className="flex flex-col gap-0.5">
+                                        <span className="font-medium">
+                                            {garantia.fechaIngreso.toLocaleDateString("es-CR", {
+                                                day: "2-digit",
+                                                month: "2-digit",
+                                                year: "numeric",
+                                            })}
+                                        </span>
+                                        <span className="text-xs text-muted-foreground">
+                                            {garantia.fechaIngreso.toLocaleTimeString("es-CR", {
+                                                hour: "2-digit",
+                                                minute: "2-digit",
+                                            })}
+                                        </span>
+                                    </div>
+                                </article>
+                            </li>
+                        ))
+                    }
 
-            </ul>
+                </ul>
+            </div>
         </>
     );
 }

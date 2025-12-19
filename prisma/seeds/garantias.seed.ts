@@ -1,161 +1,192 @@
 import { EstadoGarantia, Rol } from "@/lib/generated/prisma/enums";
 import { prisma } from "@/lib/prisma";
 
+function buildConsecutivo(
+    prefijo: string,
+    id: number,
+    fecha: Date
+) {
+    const yyyy = fecha.getFullYear()
+    const yy = yyyy.toString().slice(-2);
+    const mm = String(fecha.getMonth() + 1).padStart(2, "0");
+
+    // Ej: CD-202503-12
+    return `${prefijo}-${mm}${yy}-${id}`;
+}
+
 export async function seedGarantias() {
-    await prisma.garantia.upsert({
-        where: { consecutivo: "CD-0001" },
-        update: {},
-        create: {
-            consecutivo: "CD-0001",
-            resumen: "Laptop no enciende después de actualización",
-            descripcion:
-                "El equipo dejó de encender luego de una actualización del sistema operativo.",
-            estadoActual: EstadoGarantia.EN_REVISION_CEDI,
-            factura: "INV-889123",
+    const sucursalCEDI = await prisma.sucursal.findUnique({
+        where: { prefijo: "CD" },
+    });
 
-            contacto: {
-                nombre: "Gabriel",
-                correo: "gabriel@example.com",
-                telefono: "88888888",
-            },
+    const sucursalSP = await prisma.sucursal.findUnique({
+        where: { prefijo: "SP" },
+    });
 
-            producto: {
-                tipo: "LAPTOP",
-                descripcion: "Laptop Gamer ASUS TUF",
-                serie: "SNAS123456",
-                encendido: {
-                    enciende: false,
-                    puedeFormatear: true,
+    if (!sucursalCEDI || !sucursalSP) {
+        throw new Error("❌ Sucursales requeridas no existen");
+    }
+
+    await prisma.$transaction(async (tx) => {
+        // ===============================
+        // GARANTÍA 1 – CEDI
+        // ===============================
+        const fecha1 = new Date("2025-03-22T10:30:00Z");
+
+        const garantia1 = await tx.garantia.create({
+            data: {
+                resumen: "Laptop no enciende después de actualización",
+                descripcion:
+                    "El equipo dejó de encender luego de una actualización del sistema operativo.",
+                estadoActual: EstadoGarantia.EN_REVISION_CEDI,
+                factura: "INV-889123",
+
+                contacto: {
+                    nombre: "Gabriel",
+                    correo: "gabriel@example.com",
+                    telefono: "88888888",
                 },
-                hardware: {
-                    cpu: "Ryzen 7 4800H",
-                    gpu: "RTX 3050 Ti",
-                    ram: {
-                        modulos: 2,
-                        total: "16GB",
+
+                producto: {
+                    tipo: "LAPTOP",
+                    descripcion: "Laptop Gamer ASUS TUF",
+                    serie: "SNAS123456",
+                    encendido: {
+                        enciende: false,
+                        puedeFormatear: true,
                     },
-                    almacenamiento: [
+                    hardware: {
+                        cpu: "Ryzen 7 4800H",
+                        gpu: "RTX 3050 Ti",
+                        ram: { modulos: 2, total: "16GB" },
+                        almacenamiento: [{ tipo: "NVMe", capacidad: "512GB" }],
+                    },
+                },
+
+                cuentaDuenaId: 10,
+                ingresadoPorId: 2,
+                fechaIngreso: fecha1,
+
+                // 👇 sucursal actual
+                sucursalActualId: sucursalCEDI.id,
+
+                // 👇 historial de sucursales
+                sucursales: {
+                    create: {
+                        sucursalId: sucursalCEDI.id,
+                    },
+                },
+
+                historial: {
+                    create: [
                         {
-                            tipo: "NVMe",
-                            capacidad: "512GB",
+                            estado: EstadoGarantia.INGRESADA,
+                            usuarioId: 2,
+                            usuarioRol: Rol.ASESOR,
+                            usuarioNombre: "Usuario 2",
+                            fecha: fecha1,
+                        },
+                        {
+                            estado: EstadoGarantia.EN_REVISION_CEDI,
+                            usuarioId: 4,
+                            usuarioRol: Rol.TECNICO_2,
+                            usuarioNombre: "Usuario 4",
+                            fecha: new Date("2025-03-24T08:40:00Z"),
                         },
                     ],
                 },
-                cargador: "90W Original",
             },
+        });
 
-            sucursalId: 1,
-            sucursalNombre: "CEDI",
-            sucursalPrefijo: "CD",
-
-            cuentaDuenaId: 10,
-            ingresadoPorId: 2,
-
-            fechaIngreso: new Date("2025-03-22T10:30:00Z"),
-
-            historial: {
-                create: [
-                    {
-                        estado: EstadoGarantia.INGRESADA,
-                        usuarioId: 2,
-                        usuarioRol: Rol.ASESOR,
-                        usuarioNombre: "Usuario 2",
-                        fecha: new Date("2025-03-22T10:30:00Z"),
-                    },
-                    {
-                        estado: EstadoGarantia.EN_REVISION_SUCURSAL,
-                        usuarioId: 3,
-                        usuarioRol: Rol.TECNICO,
-                        usuarioNombre: "Usuario 3",
-                        fecha: new Date("2025-03-22T12:00:00Z"),
-                    },
-                    {
-                        estado: EstadoGarantia.ESCALADA_A_CEDI,
-                        usuarioId: 3,
-                        usuarioRol: Rol.TECNICO,
-                        usuarioNombre: "Usuario 3",
-                        fecha: new Date("2025-03-23T09:15:00Z"),
-                    },
-                    {
-                        estado: EstadoGarantia.EN_REVISION_CEDI,
-                        usuarioId: 4,
-                        usuarioRol: Rol.TECNICO_2,
-                        usuarioNombre: "Usuario 4",
-                        fecha: new Date("2025-03-24T08:40:00Z"),
-                    },
-                ],
+        await tx.garantia.update({
+            where: { id: garantia1.id },
+            data: {
+                consecutivo: buildConsecutivo(
+                    sucursalCEDI.prefijo,
+                    garantia1.id,
+                    fecha1
+                ),
             },
-        },
-    });
+        });
 
-    await prisma.garantia.upsert({
-        where: { consecutivo: "SJ-0042" },
-        update: {},
-        create: {
-            consecutivo: "SJ-0042",
-            resumen: "PC no da video después de mantenimiento",
-            descripcion:
-                "Luego de una limpieza interna el equipo dejó de dar imagen.",
-            estadoActual: EstadoGarantia.EN_REVISION_SUCURSAL,
-            factura: "INV-889124",
+        // ===============================
+        // GARANTÍA 2 – SAN PEDRO
+        // ===============================
+        const fecha2 = new Date("2025-04-01T09:37:00Z");
 
-            contacto: {
-                nombre: "Luis Rodríguez",
-                correo: "luisr@example.com",
-                telefono: "89991234",
-            },
+        const garantia2 = await tx.garantia.create({
+            data: {
+                resumen: "PC se queda pegada",
+                descripcion: "Después de un rato de jugar el equipo se congela",
+                estadoActual: EstadoGarantia.EN_REVISION_SUCURSAL,
+                factura: "INV-8892312",
 
-            producto: {
-                tipo: "ESCRITORIO",
-                descripcion: "PC Gaming armado",
-                serie: "PC-ARM-8891",
-                encendido: {
-                    enciende: true,
+                contacto: {
+                    nombre: "Maria Hernández",
+                    correo: "mariah22@example.com",
+                    telefono: "88888888",
                 },
-                hardware: {
-                    cpu: "Intel Core i5-10400",
-                    gpu: "GTX 1660 Super",
-                    ram: {
-                        modulos: 2,
-                        total: "16GB",
+
+                producto: {
+                    tipo: "ESCRITORIO",
+                    descripcion: "PC La Mítica",
+                    serie: "NA",
+                    encendido: {
+                        enciende: true,
+                        puedeFormatear: true,
                     },
-                    almacenamiento: [
-                        { tipo: "SSD", capacidad: "512GB" },
-                        { tipo: "HDD", capacidad: "1TB" },
+                    hardware: {
+                        cpu: "Ryzen 7 7700X",
+                        gpu: "RTX 5070 Ti",
+                        ram: { modulos: 2, total: "32GB" },
+                        almacenamiento: [{ tipo: "NVMe", capacidad: "1TB" }],
+                    },
+                },
+
+                cuentaDuenaId: 10,
+                ingresadoPorId: 2,
+                fechaIngreso: fecha2,
+
+                sucursalActualId: sucursalSP.id,
+
+                sucursales: {
+                    create: {
+                        sucursalId: sucursalSP.id,
+                    },
+                },
+
+                historial: {
+                    create: [
+                        {
+                            estado: EstadoGarantia.INGRESADA,
+                            usuarioId: 4,
+                            usuarioRol: Rol.ASESOR,
+                            usuarioNombre: "Usuario 4",
+                            fecha: fecha2,
+                        },
+                        {
+                            estado: EstadoGarantia.EN_REVISION_SUCURSAL,
+                            usuarioId: 9,
+                            usuarioRol: Rol.TECNICO,
+                            usuarioNombre: "Usuario 9",
+                            fecha: new Date("2025-04-04T11:40:00Z"),
+                        },
                     ],
-                    psu: "ASUS 700W",
                 },
             },
+        });
 
-            sucursalId: 2,
-            sucursalNombre: "San José Centro",
-            sucursalPrefijo: "SJ",
-
-            cuentaDuenaId: 5,
-            ingresadoPorId: 8,
-
-            fechaIngreso: new Date("2025-04-01T09:10:00Z"),
-
-            historial: {
-                create: [
-                    {
-                        estado: EstadoGarantia.INGRESADA,
-                        usuarioId: 8,
-                        usuarioRol: Rol.ASESOR,
-                        usuarioNombre: "Usuario 8",
-                        fecha: new Date("2025-04-01T09:10:00Z"),
-                    },
-                    {
-                        estado: EstadoGarantia.EN_REVISION_SUCURSAL,
-                        usuarioId: 11,
-                        usuarioRol: Rol.TECNICO,
-                        usuarioNombre: "Usuario 11",
-                        fecha: new Date("2025-04-01T11:45:00Z"),
-                    },
-                ],
+        await tx.garantia.update({
+            where: { id: garantia2.id },
+            data: {
+                consecutivo: buildConsecutivo(
+                    sucursalSP.prefijo,
+                    garantia2.id,
+                    fecha2
+                ),
             },
-        },
+        });
     });
 
-    console.log("Garantías creadas o ya existentes ✔️");
+    console.log("Garantías creadas correctamente ✔️");
 }

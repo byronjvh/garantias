@@ -27,9 +27,11 @@ model Sucursal {
   prefijo   String  @unique
   direccion String?
 
-  miembros  Usuario[]
-  usuarios  UsuarioSucursal[]
-  garantias Garantia[]
+  miembros Usuario[]
+  usuarios UsuarioSucursal[]
+
+  garantiasActuales  Garantia[]         @relation("SucursalActual")
+  garantiaSucursales GarantiaSucursal[]
 }
 
 model UsuarioSucursal {
@@ -44,21 +46,35 @@ model UsuarioSucursal {
   @@unique([usuarioId, sucursalId])
 }
 
+model GarantiaSucursal {
+  id         Int      @id @default(autoincrement())
+  garantiaId Int
+  sucursalId Int
+  creadaEn   DateTime @default(now())
+
+  garantia Garantia @relation(fields: [garantiaId], references: [id])
+  sucursal Sucursal @relation(fields: [sucursalId], references: [id])
+
+  @@unique([garantiaId, sucursalId])
+}
+
 enum EstadoGarantia {
   INGRESADA
   EN_REVISION_SUCURSAL
   ESCALADA_A_CEDI
   EN_REVISION_CEDI
-  ENVIADA_PROVEEDOR
+  ENVIADA_A_PROVEEDOR
+  ESPERANDO_REPUESTO
   EN_REPARACION
+  DEVUELTA_A_SUCURSAL
   LISTA_PARA_RETIRO
-  DENEGADA
-  CERRADA
+  RECHAZADA
+  RESUELTA
 }
 
 model Garantia {
   id           Int            @id @default(autoincrement())
-  consecutivo  String         @unique
+  consecutivo  String?        @unique
   resumen      String
   descripcion  String
   estadoActual EstadoGarantia
@@ -67,10 +83,11 @@ model Garantia {
   contacto Json
   producto Json
 
-  sucursalId      Int
-  sucursalNombre  String
-  sucursalPrefijo String
-  sucursal        Sucursal @relation(fields: [sucursalId], references: [id])
+  // 👇 NUEVO
+  sucursalActualId Int
+  sucursalActual   Sucursal @relation("SucursalActual", fields: [sucursalActualId], references: [id])
+
+  sucursales GarantiaSucursal[]
 
   cuentaDuenaId  Int
   ingresadoPorId Int
@@ -90,7 +107,7 @@ model HistorialGarantia {
   usuarioRol    Rol
   usuarioNombre String
 
-  fecha DateTime
+  fecha DateTime @default(now())
 
   garantia Garantia @relation(fields: [garantiaId], references: [id], onDelete: Cascade)
 }
