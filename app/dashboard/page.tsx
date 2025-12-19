@@ -9,6 +9,7 @@ import PrimaryButton from "../components/PrimaryButton";
 import { setUsuarioSucursal } from "@/lib/actions/setUsuarioSucursal";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { Bounce, toast } from "react-toastify";
 
 export default function DashboardHome() {
     const { sucursales } = useDashboard()
@@ -35,6 +36,17 @@ export default function DashboardHome() {
             sucursalId: selectedId,
         })
 
+        toast.success('Sucursal elegida!', {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
+        });
         router.push("/dashboard/garantias")
     }
 

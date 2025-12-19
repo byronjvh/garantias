@@ -8,6 +8,7 @@ import { createUser } from "@/lib/db/createUser";
 import { getGarantiasList } from "@/lib/db/getGarantiasList";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { ToastContainer } from "react-toastify";
 
 export const metadata: Metadata = {
     title: "Create Next App",
@@ -36,20 +37,20 @@ export default async function DashboardLayout({
     }
 
     const sucursales = await getSucursales();
-    const { items: garantias } = await getGarantiasList(1);
     return (
-        <DashboardProvider value={{ sucursales, garantias }}>
+        <DashboardProvider value={{ sucursales }}>
             <div className="h-svh flex flex-col text-p-color">
                 <header className="flex justify-between items-center w-full h-14 p-4 bg-card-bg z-10 shadow"><a href=""><img src="/Tukomer_2.png" alt="logo" className="h-10 object-contain" /></a></header>
                 <div className="flex flex-1 h-[calc(100svh-60px)]">
-                    <aside className="px-2 pt-4 h-full w-full max-w-[250px] bg-card-bg">
+                    <aside className="px-2 pt-4 h-full w-full max-w-[250px] bg-card-bg border-r border-gray-400/60">
                         <ul className="flex flex-col gap-2">
                             <li className=""><Link href="/dashboard/garantias" className="p-2 w-full hover:bg-gray-300 inline-flex items-center gap-2 text-lg rounded"><span><ShieldCheck /></span>Garantías</Link></li>
                             <li className=""><Link href="" className="p-2 w-full hover:bg-gray-300 inline-flex items-center gap-2 text-lg rounded"><span><FileText /></span>{`Reportes (pronto...)`}</Link></li>
                         </ul>
                     </aside>
-                    <main className="font-p p-6 w-full flex flex-col gap-4 overflow-hidden bg-linear-to-b from-gray-100 to-gray-200 ">
+                    <main className="font-p p-6 w-full flex flex-col gap-4 overflow-hidden bg-linear-to-b from-gray-100/75 to-gray-200/75 ">
                         {children}
+                        <ToastContainer />
                     </main>
                 </div>
             </div>
