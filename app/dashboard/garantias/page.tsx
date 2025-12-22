@@ -3,13 +3,14 @@ import Link from "next/link";
 import PrimaryButton from "@/app/components/PrimaryButton";
 import { useDashboard } from "../DashboardContext";
 import WarrantyStatus, { ESTADO_GARANTIA_OPTION_STYLE } from "../components/WarrantyStatus";
-import { ContactoGarantia, EstadoGarantia, ESTADOS_GARANTIA, Garantia, ProductoGarantia } from "@/types";
+import { ContactoGarantia, EstadoGarantia, ESTADOS_GARANTIA, Garantia, ProductoGarantia } from "@/types/types";
 import { humanizeEstadoGarantia } from "@/app/utils/humanizeEstadoGarantia";
 import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import { getGarantiasAction } from "@/lib/actions/getGarantiasAction";
 import { getRol } from "@/lib/actions/getRol";
 import { Rol } from "@/lib/generated/prisma/enums";
+import { ColorRing } from "react-loader-spinner";
 
 
 export type GarantiaItem = {
@@ -26,9 +27,10 @@ export type GarantiaItem = {
 };
 
 export default function GarantiasPage() {
+    const [loading, setLoading] = useState<boolean>(false)
     const { sucursales } = useDashboard();
     const [items, setItems] = useState<GarantiaItem[]>([]);
-    const [page, setPage] = useState(1);
+    const [page, setPage] = useState<number>(1);
     const [statusToFilter, setStatusToFilter] = useState<EstadoGarantia | null>(null);
     const [sucursalActualId, setSucursalActualId] = useState<number | undefined>(
         sucursales[0]?.id
@@ -44,6 +46,7 @@ export default function GarantiasPage() {
 
     useEffect(() => {
         let cancelled = false;
+        setLoading(true);
 
         (async () => {
             const { rol } = await getRol();
@@ -55,11 +58,12 @@ export default function GarantiasPage() {
                 page,
                 canViewAll,
                 sucursalActualId: canViewAll ? undefined : sucursalActualId,
-            });
+            }).finally(() => setLoading(false));
 
             if (!cancelled) {
                 setItems(items);
             }
+
         })();
 
         return () => {
@@ -130,7 +134,22 @@ export default function GarantiasPage() {
                     <p className="opacity-70">Sucursal</p>
                     <p className="opacity-70">Fecha</p>
                 </div>
-                <ul className="bg-card-bg flex flex-col gap-4 p-2 py-4 rounded-b border border-gray-400/60 <ul divide-y divide-gray-200">
+                <ul className="bg-card-bg flex flex-col gap-4 p-2 py-4 rounded-b border border-gray-400/60 divide-y divide-gray-200">
+                    {
+                        loading && (
+                            <span className="self-center">
+                                <ColorRing
+                                    visible={true}
+                                    height="60"
+                                    width="60"
+                                    ariaLabel="color-ring-loading"
+                                    wrapperStyle={{}}
+                                    wrapperClass="color-ring-wrapper"
+                                    colors={['#F97316', '#FDBA74', '#84CC16', '#4D7C0F', '#365314']}
+                                />
+                            </span>
+                        )
+                    }
                     {
                         items?.map((garantia) => (
                             <li key={garantia.id}>

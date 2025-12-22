@@ -1,4 +1,4 @@
-import { Sucursal } from "@/types"
+import { Sucursal } from "@/types/types"
 import { Check } from "lucide-react"
 import { MouseEventHandler, useState } from "react"
 

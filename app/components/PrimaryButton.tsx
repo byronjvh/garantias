@@ -25,7 +25,7 @@ export default function SecondaryButton({
                 disabled:opacity-50 disabled:cursor-not-allowed
                 ${className}`}
         >
-            <span className={loading ? "opacity-0" : "opacity-100"}>
+            <span className={`flex items-center gap-1 ${loading ? "opacity-0" : "opacity-100"}`}>
                 {children}
             </span>
 
