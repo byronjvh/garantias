@@ -2,7 +2,7 @@
 
 
 import { humanizeEstadoGarantia } from "@/app/utils/humanizeEstadoGarantia";
-import { EstadoGarantia, ESTADOS_GARANTIA } from "@/types";
+import { EstadoGarantia, ESTADOS_GARANTIA } from "@/types/types";
 import { useEffect, useState } from "react"
 
 export const ESTADO_GARANTIA_STYLE: Record<EstadoGarantia, string> = {

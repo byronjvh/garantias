@@ -1,4 +1,4 @@
-import { EstadoGarantia, ESTADOS_GARANTIA } from "@/types";
+import { EstadoGarantia, ESTADOS_GARANTIA } from "@/types/types";
 
 export function isEstadoGarantia(v: unknown): v is EstadoGarantia {
     return typeof v === "string" &&

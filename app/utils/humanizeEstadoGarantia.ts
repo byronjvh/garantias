@@ -1,4 +1,4 @@
-import { EstadoGarantia } from "@/types";
+import { EstadoGarantia } from "@/types/types";
 
 export function humanizeEstadoGarantia(estado: EstadoGarantia): string {
     return estado

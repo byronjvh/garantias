@@ -1,4 +1,4 @@
-import { EstadoGarantia, Rol } from "@/types";
+import { EstadoGarantia, Rol } from "@/types/types";
 
 export const transicionesPorRol: Record<Rol, EstadoGarantia[]> = {
     ADMIN: [

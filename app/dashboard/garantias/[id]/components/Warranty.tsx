@@ -1,15 +1,14 @@
-import { Garantia as WarrantyType } from "@/types"
+import { GarantiaDetails } from "@/types/garantiaDetails"
 
 type Props = {
-    id: string,
-    warranty: WarrantyType
+    warranty: GarantiaDetails
 }
 
-export default function Warranty({ id, warranty }: Props) {
+export default function Warranty({ warranty }: Props) {
 
     return (
-        <div id="pdf" className="h-[11in] w-[8.5in] bg-white flex flex-col gap-4 p-10 text-xs">
-
+        <div id="pdf" className=" bg-white flex flex-col gap-4 p-10 text-xs">
+            {warranty.contacto.nombre}
         </div >
     )
 }

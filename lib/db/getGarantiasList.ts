@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { parseContactoGarantia } from "@/lib/normalizers/parseContactoGarantia";
 import { parseProductoGarantia } from "../normalizers/parseProductoGarantia";
-import type { EstadoGarantia } from "@/types";
+import type { EstadoGarantia } from "@/types/types";
 
 type GetGarantiasParams = {
     page?: number;

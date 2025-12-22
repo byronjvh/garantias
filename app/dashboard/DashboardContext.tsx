@@ -1,6 +1,6 @@
 "use client";
 
-import { Sucursal } from "@/types";
+import { Sucursal } from "@/types/types";
 import { createContext, useContext } from "react";
 
 type DashboardContextType = {
