@@ -1,13 +1,8 @@
 "use client";
 
-import { ButtonHTMLAttributes } from "react";
+import { PrimaryButtonProps } from "./PrimaryButton";
 
-interface PrimaryButtonProps
-    extends ButtonHTMLAttributes<HTMLButtonElement> {
-    loading?: boolean;
-}
-
-export default function PrimaryButton({
+export default function SecondaryButton({
     children,
     onClick,
     loading = false,
@@ -25,7 +20,7 @@ export default function PrimaryButton({
                 disabled:opacity-50 disabled:cursor-not-allowed
                 ${className}`}
         >
-            <span className={loading ? "opacity-0" : "opacity-100"}>
+            <span className={`flex items-center gap-1 ${loading ? "opacity-0" : "opacity-100"}`}>
                 {children}
             </span>
 

@@ -2,12 +2,12 @@
 
 import { ButtonHTMLAttributes } from "react";
 
-interface PrimaryButtonProps
+export interface PrimaryButtonProps
     extends ButtonHTMLAttributes<HTMLButtonElement> {
     loading?: boolean;
 }
 
-export default function SecondaryButton({
+export default function PrimaryButton({
     children,
     onClick,
     loading = false,
