@@ -17,6 +17,7 @@ export async function getGarantiaById(id: number) {
             fechaIngreso: true,
             contacto: true,
             producto: true,
+            factura: true,
             sucursalActual: {
                 select: {
                     id: true,

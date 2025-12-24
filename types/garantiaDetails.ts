@@ -9,6 +9,7 @@ export type GarantiaDetails = {
     fechaIngreso: Date;
     contacto: ContactoGarantia;
     producto: ProductoGarantia;
+    factura: string | null;
     sucursalActual: {
         id: number;
         nombre: string;
