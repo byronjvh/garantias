@@ -25,6 +25,13 @@ export async function getGarantiaById(id: number) {
                     prefijo: true,
                 },
             },
+            sucursalIngreso: {
+                select: {
+                    id: true,
+                    nombre: true,
+                    prefijo: true,
+                },
+            },
         },
     });
 

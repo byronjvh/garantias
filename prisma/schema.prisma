@@ -30,8 +30,11 @@ model Sucursal {
   miembros Usuario[]
   usuarios UsuarioSucursal[]
 
-  garantiasActuales  Garantia[]         @relation("SucursalActual")
-  garantiaSucursales GarantiaSucursal[]
+  garantiasActuales   Garantia[]         @relation("SucursalActual")
+  garantiasIngresadas Garantia[]         @relation("SucursalIngreso")
+  garantiaSucursales  GarantiaSucursal[]
+
+  historialesGarantia HistorialGarantia[]
 }
 
 model UsuarioSucursal {
@@ -54,8 +57,6 @@ model GarantiaSucursal {
 
   garantia Garantia @relation(fields: [garantiaId], references: [id])
   sucursal Sucursal @relation(fields: [sucursalId], references: [id])
-
-  @@unique([garantiaId, sucursalId])
 }
 
 enum EstadoGarantia {
@@ -83,9 +84,11 @@ model Garantia {
   contacto Json
   producto Json
 
-  // 👇 NUEVO
   sucursalActualId Int
   sucursalActual   Sucursal @relation("SucursalActual", fields: [sucursalActualId], references: [id])
+
+  sucursalIngresoId Int
+  sucursalIngreso   Sucursal @relation("SucursalIngreso", fields: [sucursalIngresoId], references: [id])
 
   sucursales GarantiaSucursal[]
 
@@ -102,6 +105,9 @@ model HistorialGarantia {
   id         Int            @id @default(autoincrement())
   garantiaId Int
   estado     EstadoGarantia
+
+  sucursalId Int
+  sucursal   Sucursal @relation(fields: [sucursalId], references: [id])
 
   usuarioId     Int
   usuarioRol    Rol

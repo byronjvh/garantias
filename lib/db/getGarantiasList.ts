@@ -1,11 +1,11 @@
 import { prisma } from "@/lib/prisma";
 import { parseContactoGarantia } from "@/lib/normalizers/parseContactoGarantia";
-import { parseProductoGarantia } from "../normalizers/parseProductoGarantia";
+import { parseProductoGarantia } from "@/lib/normalizers/parseProductoGarantia";
 import type { EstadoGarantia } from "@/types/types";
 
 type GetGarantiasParams = {
     page?: number;
-    sucursalActualId?: number; // solo para roles NO nivel 2
+    sucursalActualId?: number;
     canViewAll: boolean;
 };
 
@@ -18,7 +18,6 @@ export async function getGarantiasList({
 }: GetGarantiasParams) {
     const skip = (page - 1) * PAGE_SIZE;
 
-    // 🔐 control de visibilidad
     const where = canViewAll
         ? {}
         : {
@@ -38,8 +37,15 @@ export async function getGarantiasList({
                 estadoActual: true,
                 fechaIngreso: true,
                 contacto: true,
-                producto: true,
+                producto: true, // JSON
                 sucursalActual: {
+                    select: {
+                        id: true,
+                        nombre: true,
+                        prefijo: true,
+                    },
+                },
+                sucursalIngreso: {
                     select: {
                         id: true,
                         nombre: true,
@@ -51,20 +57,28 @@ export async function getGarantiasList({
         prisma.garantia.count({ where }),
     ]);
 
-    const items = itemsRaw.map((g) => ({
-        id: g.id,
-        consecutivo: g.consecutivo ?? undefined,
-        resumen: g.resumen,
-        estadoActual: g.estadoActual as EstadoGarantia,
-        fechaIngreso: g.fechaIngreso,
-        contacto: parseContactoGarantia(g.contacto),
-        producto: parseProductoGarantia(g.producto),
-        sucursal: {
-            id: g.sucursalActual.id,
-            nombre: g.sucursalActual.nombre,
-            prefijo: g.sucursalActual.prefijo,
-        },
-    }));
+    const items = itemsRaw.map((g) => {
+
+        return {
+            id: g.id,
+            consecutivo: g.consecutivo ?? undefined,
+            resumen: g.resumen,
+            estadoActual: g.estadoActual as EstadoGarantia,
+            fechaIngreso: g.fechaIngreso,
+            contacto: parseContactoGarantia(g.contacto),
+            producto: parseProductoGarantia(g.producto),
+            sucursalActual: {
+                id: g.sucursalActual.id,
+                nombre: g.sucursalActual.nombre,
+                prefijo: g.sucursalActual.prefijo,
+            },
+            sucursalIngreso: {
+                id: g.sucursalIngreso.id,
+                nombre: g.sucursalIngreso.nombre,
+                prefijo: g.sucursalIngreso.prefijo,
+            },
+        };
+    });
 
     return {
         items,

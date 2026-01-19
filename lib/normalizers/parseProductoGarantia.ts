@@ -1,22 +1,40 @@
-// lib/normalizers/parseProductoGarantia.ts
-import { ProductoGarantia } from "@/types/types";
+import { isProductoGarantiaBase, isProductoPC } from "@/app/utils/guards";
+import { ProductoGarantia, TipoProducto } from "@/types/types";
 import { JsonValue } from "@prisma/client/runtime/client";
 
-function isProductoGarantia(value: unknown): value is ProductoGarantia {
-    if (!value || typeof value !== "object") return false;
-
-    const v = value as Record<string, unknown>;
-
-    return (
-        typeof v.tipo === "string" &&
-        typeof v.descripcion === "string"
-    );
+function isObject(value: unknown): value is Record<string, unknown> {
+    return typeof value === "object" && value !== null;
 }
-
 export function parseProductoGarantia(value: JsonValue): ProductoGarantia {
-    if (isProductoGarantia(value)) {
-        return value;
+    if (!isObject(value)) {
+        throw new Error("Producto inválido");
     }
 
-    throw new Error("Producto de garantía inválido");
+    const { tipo, caracteristicas } = value;
+
+    if (typeof tipo !== "string" || !isObject(caracteristicas)) {
+        throw new Error("Producto inválido");
+    }
+
+    // 🖥️ PC → base + extras (TODO)
+    if (tipo === TipoProducto.PC) {
+        if (!isProductoPC(caracteristicas)) {
+            throw new Error("PC con características inválidas");
+        }
+
+        return {
+            tipo: TipoProducto.PC,
+            caracteristicas: caracteristicas as any, // ← se devuelve COMPLETO
+        };
+    }
+
+    // 📦 Otros productos → base
+    if (!isProductoGarantiaBase(caracteristicas)) {
+        throw new Error("Producto base inválido");
+    }
+
+    return {
+        tipo: tipo as Exclude<TipoProducto, TipoProducto.PC>,
+        caracteristicas: caracteristicas,
+    };
 }

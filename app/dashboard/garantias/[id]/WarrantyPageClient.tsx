@@ -8,6 +8,7 @@ import { GarantiaDetails } from "@/types/garantiaDetails"
 import { Printer } from "lucide-react";
 import WarrantyStatus from "../../components/WarrantyStatus";
 import SecondaryButton from "@/app/components/SecondaryButton";
+import { TipoProducto } from "@/types/types";
 
 type Props = {
     garantia: GarantiaDetails;
@@ -39,8 +40,10 @@ export default function WarrantyPageClient({ garantia }: Props) {
             .finally(() => setLoading(false));
     };
 
+    const producto = garantia.producto
+
     return (
-        <div className="mx-auto w-full max-w-[800px] flex flex-col gap-4">
+        <div className="mx-auto w-full max-w-[800px] flex flex-col gap-4 bg-card-bg p-4 border border-gray-400/60 rounded shadow-lg/5">
 
             {/* HEADER */}
             <header className="flex items-center justify-between rounded-md bg-card-bg p-4 border border-gray-400/60">
@@ -56,7 +59,7 @@ export default function WarrantyPageClient({ garantia }: Props) {
                         })} {garantia.fechaIngreso.toLocaleTimeString("es-CR", {
                             hour: "2-digit",
                             minute: "2-digit",
-                        })} · {garantia.sucursalActual.nombre}
+                        })} · {garantia.sucursalIngreso.nombre}
                     </p>
                 </div>
 
@@ -89,20 +92,21 @@ export default function WarrantyPageClient({ garantia }: Props) {
                         Producto
                     </h3>
                     <p className="text-sm text-slate-800">
-                        {garantia.producto.descripcion}
+                        {garantia.producto.caracteristicas.descripcion}
                     </p>
                     <p className="text-sm text-slate-500">
-                        {garantia.producto.serie}
+                        {garantia.producto.caracteristicas.serie}
                     </p>
+                    <button>Ver ficha</button>
                 </div>
 
                 {/* Falla */}
                 <div className="rounded-md bg-card-bg p-4 border border-gray-400/60">
                     <h3 className="mb-2 text-sm font-semibold text-slate-700">
-                        Falla reportada
+                        Resumen
                     </h3>
                     <p className="text-sm text-slate-800 line-clamp-3">
-                        {garantia.descripcion}
+                        {garantia.resumen}
                     </p>
                 </div>
             </div>
@@ -126,18 +130,25 @@ export default function WarrantyPageClient({ garantia }: Props) {
                     {/* Detalle */}
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div>
+                            <p className="text-sm text-slate-500">Problema reportado</p>
+                            <p className="text-sm text-slate-800">
+                                {garantia.descripcion}
+                            </p>
+                        </div>
+                        <div>
                             <p className="text-sm text-slate-500">Factura</p>
                             <p className="text-sm text-slate-800">{garantia.factura}</p>
                         </div>
                         <div>
-                            <p className="text-sm text-slate-500">Accesorios</p>
+                            <p className="text-sm text-slate-500">Estado físico y anotaciones</p>
                             <p className="text-sm text-slate-800">
-                                {garantia.producto.accesorios?.otros}
+                                {garantia.producto.caracteristicas.estadoFisico}
                             </p>
                         </div>
                         <div>
-                            <p className="text-sm text-slate-500">Condición física</p>
+                            <p className="text-sm text-slate-500">Accesorios</p>
                             <p className="text-sm text-slate-800">
+                                {producto.caracteristicas.accesorios}
                             </p>
                         </div>
                     </div>

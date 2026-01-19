@@ -3,7 +3,7 @@ import Link from "next/link";
 import PrimaryButton from "@/app/components/PrimaryButton";
 import { useDashboard } from "../DashboardContext";
 import WarrantyStatus, { ESTADO_GARANTIA_OPTION_STYLE } from "../components/WarrantyStatus";
-import { ContactoGarantia, EstadoGarantia, ESTADOS_GARANTIA, Garantia, ProductoGarantia } from "@/types/types";
+import { ContactoGarantia, EstadoGarantia, ESTADOS_GARANTIA, ProductoGarantiaBase, ProductoGarantiaEscritorio, ProductoGarantiaLaptop, TipoProducto } from "@/types/types";
 import { humanizeEstadoGarantia } from "@/app/utils/humanizeEstadoGarantia";
 import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
@@ -20,8 +20,14 @@ export type GarantiaItem = {
     estadoActual: EstadoGarantia;
     fechaIngreso: Date;
     contacto: ContactoGarantia;
-    producto: ProductoGarantia;
-    sucursal: {
+    producto: {
+        tipo: TipoProducto;
+        caracteristicas: ProductoGarantiaBase | ProductoGarantiaEscritorio | ProductoGarantiaLaptop;
+    }
+    sucursalActual: {
+        nombre: string;
+    };
+    sucursalIngreso: {
         nombre: string;
     };
 };
@@ -171,11 +177,11 @@ export default function GarantiasPage() {
                                             </p>
                                         </Link>
                                     </div>
-                                    <p>{garantia.producto.descripcion}</p>
+                                    <p>{garantia.producto.caracteristicas.descripcion}</p>
                                     <div className="">
                                         <WarrantyStatus estado={garantia.estadoActual} />
                                     </div>
-                                    <p>{garantia.sucursal.nombre}</p>
+                                    <p>{garantia.sucursalActual.nombre}</p>
                                     <div className="flex flex-col gap-0.5">
                                         <span className="font-medium">
                                             {garantia.fechaIngreso.toLocaleDateString("es-CR", {
