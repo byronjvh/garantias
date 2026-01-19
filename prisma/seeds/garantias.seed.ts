@@ -1,5 +1,6 @@
 import { EstadoGarantia, Rol } from "@/lib/generated/prisma/enums";
 import { prisma } from "@/lib/prisma";
+import { TipoProducto } from "@/types/types";
 
 function buildConsecutivo(
     prefijo: string,
@@ -47,30 +48,31 @@ export async function seedGarantias() {
                     telefono: "88888888",
                 },
 
+                sucursalActualId: sucursalCEDI.id,
+                sucursalIngresoId: sucursalCEDI.id,
                 producto: {
-                    tipo: "LAPTOP",
-                    descripcion: "Laptop Gamer ASUS TUF",
-                    serie: "SNAS123456",
-                    encendido: {
-                        enciende: false,
-                        puedeFormatear: true,
-                    },
-                    hardware: {
-                        cpu: "Ryzen 7 4800H",
-                        gpu: "RTX 3050 Ti",
-                        ram: { modulos: 2, total: "16GB" },
-                        almacenamiento: [{ tipo: "NVMe", capacidad: "512GB" }],
-                    },
+                    tipo: TipoProducto.PC,
+                    caracteristicas: {
+                        descripcion: "Laptop Gamer ASUS TUF",
+                        estadoFisico: "Marcas de uso",
+                        serie: "SNAS123456",
+                        encendido: {
+                            enciende: false,
+                            puedeFormatear: true,
+                        },
+                        hardware: {
+                            cpu: "Ryzen 7 4800H",
+                            gpu: "RTX 3050 Ti",
+                            ram: { modulos: 2, total: "16GB" },
+                            almacenamiento: [{ tipo: "NVMe", capacidad: "512GB" }],
+                        },
+                    }
                 },
 
                 cuentaDuenaId: 10,
                 ingresadoPorId: 2,
                 fechaIngreso: fecha1,
 
-                // 👇 sucursal actual
-                sucursalActualId: sucursalCEDI.id,
-
-                // 👇 historial de sucursales
                 sucursales: {
                     create: {
                         sucursalId: sucursalCEDI.id,
@@ -81,6 +83,7 @@ export async function seedGarantias() {
                     create: [
                         {
                             estado: EstadoGarantia.INGRESADA,
+                            sucursalId: sucursalCEDI.id,
                             usuarioId: 2,
                             usuarioRol: Rol.ASESOR,
                             usuarioNombre: "Usuario 2",
@@ -88,6 +91,7 @@ export async function seedGarantias() {
                         },
                         {
                             estado: EstadoGarantia.EN_REVISION_CEDI,
+                            sucursalId: sucursalCEDI.id,
                             usuarioId: 4,
                             usuarioRol: Rol.TECNICO_2,
                             usuarioNombre: "Usuario 4",
@@ -121,6 +125,8 @@ export async function seedGarantias() {
                 estadoActual: EstadoGarantia.EN_REVISION_SUCURSAL,
                 factura: "INV-8892312",
 
+                sucursalActualId: sucursalSP.id,
+                sucursalIngresoId: sucursalSP.id,
                 contacto: {
                     nombre: "Maria Hernández",
                     correo: "mariah22@example.com",
@@ -128,26 +134,27 @@ export async function seedGarantias() {
                 },
 
                 producto: {
-                    tipo: "ESCRITORIO",
-                    descripcion: "PC La Mítica",
-                    serie: "NA",
-                    encendido: {
-                        enciende: true,
-                        puedeFormatear: true,
-                    },
-                    hardware: {
-                        cpu: "Ryzen 7 7700X",
-                        gpu: "RTX 5070 Ti",
-                        ram: { modulos: 2, total: "32GB" },
-                        almacenamiento: [{ tipo: "NVMe", capacidad: "1TB" }],
-                    },
+                    tipo: TipoProducto.PC,
+                    caracteristicas: {
+                        descripcion: "PC La Mítica",
+                        estadoFisico: "Rayón en la tapa trasera",
+                        serie: "NA",
+                        encendido: {
+                            enciende: true,
+                            puedeFormatear: true,
+                        },
+                        hardware: {
+                            cpu: "Ryzen 7 7700X",
+                            gpu: "RTX 5070 Ti",
+                            ram: { modulos: 2, total: "32GB" },
+                            almacenamiento: [{ tipo: "NVMe", capacidad: "1TB" }],
+                        },
+                    }
                 },
 
                 cuentaDuenaId: 10,
                 ingresadoPorId: 2,
                 fechaIngreso: fecha2,
-
-                sucursalActualId: sucursalSP.id,
 
                 sucursales: {
                     create: {
@@ -159,6 +166,7 @@ export async function seedGarantias() {
                     create: [
                         {
                             estado: EstadoGarantia.INGRESADA,
+                            sucursalId: sucursalSP.id,
                             usuarioId: 4,
                             usuarioRol: Rol.ASESOR,
                             usuarioNombre: "Usuario 4",
@@ -166,6 +174,7 @@ export async function seedGarantias() {
                         },
                         {
                             estado: EstadoGarantia.EN_REVISION_SUCURSAL,
+                            sucursalId: sucursalSP.id,
                             usuarioId: 9,
                             usuarioRol: Rol.TECNICO,
                             usuarioNombre: "Usuario 9",

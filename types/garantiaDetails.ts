@@ -1,4 +1,4 @@
-import { ContactoGarantia, EstadoGarantia, ProductoGarantia } from "./types";
+import { ContactoGarantia, EstadoGarantia, ProductoGarantia, TipoProducto } from "./types";
 
 export type GarantiaDetails = {
     id: number;
@@ -8,11 +8,17 @@ export type GarantiaDetails = {
     estadoActual: EstadoGarantia;
     fechaIngreso: Date;
     contacto: ContactoGarantia;
-    producto: ProductoGarantia;
+    producto: ProductoGarantia
     factura: string | null;
     sucursalActual: {
         id: number;
         nombre: string;
         prefijo: string;
     };
+    sucursalIngreso: {
+        id: number;
+        nombre: string;
+        prefijo: string;
+    };
+
 };

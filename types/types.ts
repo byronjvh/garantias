@@ -30,6 +30,7 @@ export type EstadoGarantia =
     | "RECHAZADA"
     | "RESUELTA";
 
+
 export const ESTADOS_GARANTIA = [
     "INGRESADA",
     "EN_REVISION_SUCURSAL",
@@ -43,6 +44,11 @@ export const ESTADOS_GARANTIA = [
     "RECHAZADA",
     "RESUELTA"
 ] as const;
+
+export enum TipoProducto {
+    PC = "PC",
+    OTRO = "OTRO",
+}
 
 
 export interface UsuarioMini {
@@ -58,12 +64,28 @@ export interface HistorialGarantia {
     comentario?: string;
 }
 
+export type ProductoGarantia =
+    | {
+        tipo: TipoProducto.PC;
+        caracteristicas:
+        | ProductoGarantiaEscritorio
+        | ProductoGarantiaLaptop;
+    }
+    | {
+        tipo: Exclude<TipoProducto, TipoProducto.PC>;
+        caracteristicas: ProductoGarantiaBase;
+    };
 
-export interface ProductoGarantia {
-    tipo: "LAPTOP" | "ESCRITORIO" | "OTRO";
+
+export interface ProductoGarantiaBase {
     descripcion: string;
+    estadoFisico: string;
     serie?: string;
+    accesorios?: string;
+}
 
+
+export interface ProductoGarantiaEscritorio extends ProductoGarantiaBase {
     encendido?: {
         enciende: boolean;
         puedeFormatear?: boolean;
@@ -82,12 +104,29 @@ export interface ProductoGarantia {
             capacidad: string;
         }[];
     };
+}
 
-    accesorios?: {
-        cargadorIncluido?: boolean;
-        otros?: string[];
+export interface ProductoGarantiaLaptop extends ProductoGarantiaBase {
+    encendido?: {
+        enciende: boolean;
+        puedeFormatear?: boolean;
+        contrasena?: string;
+    };
+
+    hardware?: {
+        cpu?: string;
+        gpu?: string;
+        ram?: {
+            modulos: number;
+            total: string;
+        };
+        almacenamiento?: {
+            tipo: string;
+            capacidad: string;
+        }[];
     };
 }
+
 
 
 export interface Garantia {
@@ -103,13 +142,19 @@ export interface Garantia {
         telefono: string;
     };
 
-    producto: ProductoGarantia;
+    producto: ProductoGarantia
 
-    sucursal: {
+    sucursalActual: {
         id: number;
         nombre: string;
         prefijo: string;
     };
+    sucursalIngreso: {
+        id: number;
+        nombre: string;
+        prefijo: string;
+    };
+
 
     usuarios: {
         cuentaDuena: UsuarioMini;
