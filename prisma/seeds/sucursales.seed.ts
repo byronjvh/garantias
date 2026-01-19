@@ -13,11 +13,6 @@ export async function seedSucursales() {
             prefijo: "SP"
         },
         {
-            nombre: "Paseo de las Flores",
-            direccion: "Mall Paseo de las Flores, Heredia",
-            prefijo: "PF"
-        },
-        {
             nombre: "City Mall",
             direccion: "City Mall, Alajuela",
             prefijo: "CM"
