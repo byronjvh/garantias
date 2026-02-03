@@ -22,13 +22,6 @@
   --color-title-color: var(--title-color);
 }
 
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-} */
-
 body {
   background: var(--background);
   color: var(--foreground);
@@ -36,7 +29,160 @@ body {
 }
 
 @layer base {
+  * {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
+
   img {
     display: initial;
+  }
+
+  .pdf-column {
+    flex: 0 0 auto;
+  }
+
+  .pdf-preview {
+    --scale: 0.55;
+
+    width: calc(8.5in * var(--scale));
+    height: calc(11in * var(--scale));
+
+    display: inline-block;
+    overflow: hidden;
+  }
+
+  .pdf-receipt {
+    width: 8.5in;
+    height: 11in;
+    transform: scale(var(--scale));
+    transform-origin: top left;
+
+    flex: 0 0 auto;
+    padding: 32px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    color: #000;
+    background: #fff;
+  }
+
+  /* Header */
+  .pdf-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #bbb;
+  }
+
+  .pdf-header-right {
+    text-align: right;
+  }
+
+  .pdf-logo {
+    height: 32px;
+    object-fit: contain;
+  }
+
+  .pdf-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+  }
+
+  .pdf-subtitle {
+    font-size: 14px;
+    font-weight: 600;
+    color: #555;
+    padding-top: 8px;
+  }
+
+  .pdf-label {
+    padding-top: 8px;
+    font-weight: 600;
+  }
+
+  .pdf-number {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .pdf-date {
+    font-size: 14px;
+  }
+
+  /* Sections */
+  .pdf-section {
+    margin-bottom: 32px;
+  }
+
+  .pdf-section-title {
+    font-weight: 600;
+    padding-bottom: 4px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid #bbb;
+  }
+
+  /* Grid */
+  .pdf-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+  }
+
+  .pdf-term {
+    padding: 12px;
+    border: 1px solid #999;
+    border-radius: 8px;
+  }
+
+  .pdf-term-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    padding-bottom: 4px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid #bbb;
+  }
+
+  .pdf-term-p {
+    font-size: 10px;
+  }
+
+  .pdf-list {
+    list-style: disc;
+  }
+
+  .pdf-list-item {
+    font-size: 10px;
+    margin-left: 12px;
+    padding-left: 2px;
+  }
+
+  /* Signatures */
+  .pdf-signatures {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    margin-top: 52px;
+  }
+
+  .pdf-sign {
+    text-align: center;
+  }
+
+  .pdf-sign-line {
+    border-top: 1px solid #444;
+    padding-top: 6px;
+  }
+
+  /* Footer */
+  .pdf-footer {
+    text-align: center;
+    font-size: 12px;
+    color: #555;
+    margin-top: 24px;
   }
 }

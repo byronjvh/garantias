@@ -1,7 +1,7 @@
 "use server"
 
 import { prisma } from "@/lib/prisma"
-import { Rol } from "@prisma/client"
+import { Rol } from "../generated/prisma/enums"
 
 
 interface Params {

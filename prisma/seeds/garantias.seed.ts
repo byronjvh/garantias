@@ -68,6 +68,9 @@ export async function seedGarantias() {
                         },
                     }
                 },
+                reporteTecnico: [
+                    "Se descubrió un fallo en la memoria ram"
+                ],
 
                 cuentaDuenaId: 10,
                 ingresadoPorId: 2,
@@ -132,7 +135,6 @@ export async function seedGarantias() {
                     correo: "mariah22@example.com",
                     telefono: "88888888",
                 },
-
                 producto: {
                     tipo: TipoProducto.PC,
                     caracteristicas: {
@@ -151,7 +153,10 @@ export async function seedGarantias() {
                         },
                     }
                 },
-
+                
+                reporteTecnico: [
+                    
+                ],
                 cuentaDuenaId: 10,
                 ingresadoPorId: 2,
                 fechaIngreso: fecha2,

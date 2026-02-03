@@ -5,6 +5,7 @@ import { prisma } from "../prisma";
  * @param email El email del usuario
  * @returns El usuario si existe, null si no existe
  */
+
 export async function findUserByEmail(email: string) {
     return await prisma.usuario.findUnique({
         where: { email },

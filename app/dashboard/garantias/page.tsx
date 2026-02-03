@@ -3,14 +3,15 @@ import Link from "next/link";
 import PrimaryButton from "@/app/components/PrimaryButton";
 import { useDashboard } from "../DashboardContext";
 import WarrantyStatus, { ESTADO_GARANTIA_OPTION_STYLE } from "../components/WarrantyStatus";
-import { ContactoGarantia, EstadoGarantia, ESTADOS_GARANTIA, ProductoGarantiaBase, ProductoGarantiaEscritorio, ProductoGarantiaLaptop, TipoProducto } from "@/types/types";
+import { ContactoGarantia, EstadoGarantia, ESTADOS_GARANTIA, ProductoGarantiaBase, ProductoGarantiaPC, TipoProducto } from "@/types/types";
 import { humanizeEstadoGarantia } from "@/app/utils/humanizeEstadoGarantia";
 import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import { getGarantiasAction } from "@/lib/actions/getGarantiasAction";
-import { getRol } from "@/lib/actions/getRol";
+// import { getRol } from "@/lib/actions/getRol";
 import { Rol } from "@/lib/generated/prisma/enums";
 import { ColorRing } from "react-loader-spinner";
+import { getRol } from "@/app/actions";
 
 
 export type GarantiaItem = {
@@ -22,7 +23,7 @@ export type GarantiaItem = {
     contacto: ContactoGarantia;
     producto: {
         tipo: TipoProducto;
-        caracteristicas: ProductoGarantiaBase | ProductoGarantiaEscritorio | ProductoGarantiaLaptop;
+        caracteristicas: ProductoGarantiaBase | ProductoGarantiaPC;
     }
     sucursalActual: {
         nombre: string;
@@ -56,15 +57,15 @@ export default function GarantiasPage() {
 
         (async () => {
             const { rol } = await getRol();
-
-            const canViewAll =
-                rol?.rol === Rol.TECNICO_2 || rol?.rol === Rol.TI;
-
+            console.log(rol)
+            const canViewAll = rol === Rol.TECNICO_2 || rol === Rol.TI;
+            
             const { items } = await getGarantiasAction({
                 page,
                 canViewAll,
                 sucursalActualId: canViewAll ? undefined : sucursalActualId,
             }).finally(() => setLoading(false));
+            console.log(items)
 
             if (!cancelled) {
                 setItems(items);

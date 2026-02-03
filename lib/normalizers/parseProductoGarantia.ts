@@ -1,6 +1,6 @@
 import { isProductoGarantiaBase, isProductoPC } from "@/app/utils/guards";
 import { ProductoGarantia, TipoProducto } from "@/types/types";
-import { JsonValue } from "@prisma/client/runtime/client";
+import { JsonValue } from "../generated/prisma/internal/prismaNamespace";
 
 function isObject(value: unknown): value is Record<string, unknown> {
     return typeof value === "object" && value !== null;

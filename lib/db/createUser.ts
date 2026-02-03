@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma"
-import { Prisma } from "@prisma/client"
 import { User } from "better-auth"
+import { Prisma } from "../generated/prisma/client"
 
 export async function createUser(user: User) {
     try {

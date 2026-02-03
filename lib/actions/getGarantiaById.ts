@@ -4,6 +4,7 @@
 import { prisma } from "@/lib/prisma";
 import { parseContactoGarantia } from "@/lib/normalizers/parseContactoGarantia";
 import { parseProductoGarantia } from "@/lib/normalizers/parseProductoGarantia";
+import { parseReporteTecnico } from "../normalizers/parseReporteTecnico";
 
 export async function getGarantiaById(id: number) {
     const g = await prisma.garantia.findUnique({
@@ -17,6 +18,7 @@ export async function getGarantiaById(id: number) {
             fechaIngreso: true,
             contacto: true,
             producto: true,
+            reporteTecnico: true,
             factura: true,
             sucursalActual: {
                 select: {
@@ -32,6 +34,11 @@ export async function getGarantiaById(id: number) {
                     prefijo: true,
                 },
             },
+            historial: {
+                include: {
+                    sucursal: true
+                }
+            },
         },
     });
 
@@ -41,5 +48,21 @@ export async function getGarantiaById(id: number) {
         ...g,
         contacto: parseContactoGarantia(g.contacto),
         producto: parseProductoGarantia(g.producto),
+        reporteTecnico: parseReporteTecnico(g.reporteTecnico),
+        historial: g.historial.map(h => ({
+            id: h.id,
+            estado: h.estado,
+            fecha: h.fecha.toISOString(),
+            usuario: {
+                id: h.usuarioId,
+                nombre: h.usuarioNombre,
+                rol: h.usuarioRol,
+            },
+            sucursal: {
+                id: h.sucursal.id,
+                nombre: h.sucursal.nombre,
+                prefijo: h.sucursal.prefijo,
+            },
+        })),
     };
 }

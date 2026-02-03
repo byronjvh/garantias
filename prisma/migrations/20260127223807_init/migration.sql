@@ -57,6 +57,7 @@ CREATE TABLE "Garantia" (
     "factura" TEXT,
     "contacto" JSONB NOT NULL,
     "producto" JSONB NOT NULL,
+    "reporteTecnico" JSONB NOT NULL,
     "sucursalActualId" INTEGER NOT NULL,
     "sucursalIngresoId" INTEGER NOT NULL,
     "cuentaDuenaId" INTEGER NOT NULL,

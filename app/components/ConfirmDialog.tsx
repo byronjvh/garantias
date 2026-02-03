@@ -23,11 +23,11 @@ export function ConfirmDialog({
     return (
         <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
-            onClick={onCancel} // 👈 click fuera = cancelar
+            onClick={onCancel} 
         >
             <div
                 className="w-full max-w-sm rounded-md bg-card-bg p-6 shadow-xl"
-                onClick={(e) => e.stopPropagation()} // 👈 evita cerrar al click interno
+                onClick={(e) => e.stopPropagation()} 
             >
                 <h3 className="font-title text-lg font-bold mb-2">
                     {title}

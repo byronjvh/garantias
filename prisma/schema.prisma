@@ -83,6 +83,7 @@ model Garantia {
 
   contacto Json
   producto Json
+  reporteTecnico Json
 
   sucursalActualId Int
   sucursalActual   Sucursal @relation("SucursalActual", fields: [sucursalActualId], references: [id])

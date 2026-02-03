@@ -67,13 +67,11 @@ export interface HistorialGarantia {
 export type ProductoGarantia =
     | {
         tipo: TipoProducto.PC;
-        caracteristicas:
-        | ProductoGarantiaEscritorio
-        | ProductoGarantiaLaptop;
+        caracteristicas: ProductoGarantiaPC;
     }
     | {
-        tipo: Exclude<TipoProducto, TipoProducto.PC>;
-        caracteristicas: ProductoGarantiaBase;
+      tipo: TipoProducto.OTRO;
+      caracteristicas: ProductoGarantiaBase;
     };
 
 
@@ -85,7 +83,7 @@ export interface ProductoGarantiaBase {
 }
 
 
-export interface ProductoGarantiaEscritorio extends ProductoGarantiaBase {
+export interface ProductoGarantiaPC extends ProductoGarantiaBase {
     encendido?: {
         enciende: boolean;
         puedeFormatear?: boolean;
@@ -105,28 +103,6 @@ export interface ProductoGarantiaEscritorio extends ProductoGarantiaBase {
         }[];
     };
 }
-
-export interface ProductoGarantiaLaptop extends ProductoGarantiaBase {
-    encendido?: {
-        enciende: boolean;
-        puedeFormatear?: boolean;
-        contrasena?: string;
-    };
-
-    hardware?: {
-        cpu?: string;
-        gpu?: string;
-        ram?: {
-            modulos: number;
-            total: string;
-        };
-        almacenamiento?: {
-            tipo: string;
-            capacidad: string;
-        }[];
-    };
-}
-
 
 
 export interface Garantia {
@@ -142,7 +118,8 @@ export interface Garantia {
         telefono: string;
     };
 
-    producto: ProductoGarantia
+    producto: ProductoGarantia;
+    reporteTecnico: string[];
 
     sucursalActual: {
         id: number;

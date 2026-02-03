@@ -1,6 +1,6 @@
 // lib/normalizers/parseContactoGarantia.ts
 import { ContactoGarantia } from "@/types/types";
-import { JsonValue } from "@prisma/client/runtime/client";
+import { JsonValue } from "../generated/prisma/internal/prismaNamespace";
 
 export function parseContactoGarantia(value: JsonValue): ContactoGarantia {
     if (!value || typeof value !== "object") {
