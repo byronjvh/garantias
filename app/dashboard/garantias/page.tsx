@@ -12,6 +12,7 @@ import { getGarantiasAction } from "@/lib/actions/getGarantiasAction";
 import { Rol } from "@/lib/generated/prisma/enums";
 import { ColorRing } from "react-loader-spinner";
 import { getRol } from "@/app/actions";
+import { searchFilter, statusFilter, sucursalFilter } from "@/app/logic/filters";
 
 
 export type GarantiaItem = {
@@ -37,8 +38,10 @@ export default function GarantiasPage() {
     const [loading, setLoading] = useState<boolean>(false)
     const { sucursales } = useDashboard();
     const [items, setItems] = useState<GarantiaItem[]>([]);
+    const [searchQuery, setSearchQuery] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const [statusToFilter, setStatusToFilter] = useState<EstadoGarantia | null>(null);
+    const [sucursalToFilter, setSucursalToFilter] = useState<string | null>(null);
     const [sucursalActualId, setSucursalActualId] = useState<number | undefined>(
         sucursales[0]?.id
     );
@@ -50,7 +53,16 @@ export default function GarantiasPage() {
         if (!status) return setStatusToFilter(null)
         setStatusToFilter(status)
     };
+    const handleSucursalToFilter = (
+        e: React.ChangeEvent<HTMLSelectElement>
+    ) => {
+        const sucursal = e.target.value as string;
+        if (!sucursal) return setSucursalToFilter(null)
+        setSucursalToFilter(sucursal)
+    };
 
+    const filteredItems = sucursalFilter(statusFilter(searchFilter(items, searchQuery), statusToFilter), sucursalToFilter)
+    console.log(statusToFilter, items[0]?.estadoActual)
     useEffect(() => {
         let cancelled = false;
         setLoading(true);
@@ -59,7 +71,7 @@ export default function GarantiasPage() {
             const { rol } = await getRol();
             console.log(rol)
             const canViewAll = rol === Rol.TECNICO_2 || rol === Rol.TI;
-            
+
             const { items } = await getGarantiasAction({
                 page,
                 canViewAll,
@@ -78,6 +90,12 @@ export default function GarantiasPage() {
         };
     }, [page, sucursalActualId]);
 
+    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const query = e.target.value
+        if (!query) setSearchQuery("")
+        setSearchQuery(query)
+    }
+
     return (
         <>
             <header className="flex flex-col gap-4">
@@ -93,6 +111,7 @@ export default function GarantiasPage() {
                     <div className="flex items-center rounded bg-card-bg border border-gray-400/60 focus-within:ring-2 focus-within:ring-primary/30">
                         <Search size={18} className="ml-2 opacity-60" />
                         <input
+                            onChange={handleSearch}
                             className="p-2 w-full focus:outline-none bg-transparent"
                             placeholder="Buscar por producto, cliente o caso"
                             type="text"
@@ -105,14 +124,14 @@ export default function GarantiasPage() {
                         <option value="" className="capitalize bg-card-bg">Todos los Estados</option>
                         {
                             ESTADOS_GARANTIA?.map((estado, i) => (
-                                <option className={`bg-card-bg ${ESTADO_GARANTIA_OPTION_STYLE[estado]}`} key={i}>
+                                <option value={estado} className={`bg-card-bg ${ESTADO_GARANTIA_OPTION_STYLE[estado]}`} key={i}>
                                     {humanizeEstadoGarantia(estado)}
                                 </option>
                             ))
                         }
                     </select>
                     <select
-                        onChange={handleStatusToFilter}
+                        onChange={handleSucursalToFilter}
                         className="px-3 py-2 rounded cursor-pointer bg-card-bg border border-gray-400/60 focus:ring-2 focus:ring-primary/30"
                     >
                         <option value="" className="bg-card-bg" >Todas las Tiendas</option>
@@ -158,7 +177,7 @@ export default function GarantiasPage() {
                         )
                     }
                     {
-                        items?.map((garantia) => (
+                        filteredItems?.map((garantia) => (
                             <li key={garantia.id}>
                                 <article className="p-2 py-4 grid grid-cols-[.5fr_1fr_5fr_3fr_3fr_2fr_2fr] gap-6 text-sm items-center">
                                     <div>
