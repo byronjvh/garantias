@@ -4,7 +4,7 @@
 import PrimaryButton from "@/app/components/PrimaryButton"
 import { useState } from "react"
 import { GarantiaDetails } from "@/types/garantiaDetails"
-import { Printer } from "lucide-react";
+import { ArrowRight, Printer } from "lucide-react";
 import WarrantyStatus, { ESTADO_GARANTIA_OPTION_STYLE, } from "../../components/WarrantyStatus";
 import SecondaryButton from "@/app/components/SecondaryButton";
 import { humanizeEstadoGarantia } from "@/app/utils/humanizeEstadoGarantia";
@@ -122,7 +122,7 @@ export default function WarrantyPageClient({ garantia }: Props) {
                     </p>
                     {
                         producto.tipo === TipoProducto.PC && (
-                            <button className="cursor-pointer" onClick={() => setOpenSpecs(true)}>Ver ficha</button>
+                            <button className="cursor-pointer mt-0.5 flex items-center gap-0.5 text-sm font-medium bg-orange-500/20 border border-orange-500/40 text-orange-900 hover:brightness-125 transition-all duration-200 ease-out py-0.5 px-2 rounded-full" onClick={() => setOpenSpecs(true)}>Ver ficha <ArrowRight size={18} /></button>
                         )
                     }
                 </div>
