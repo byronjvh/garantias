@@ -70,8 +70,8 @@ export type ProductoGarantia =
         caracteristicas: ProductoGarantiaPC;
     }
     | {
-      tipo: TipoProducto.OTRO;
-      caracteristicas: ProductoGarantiaBase;
+        tipo: TipoProducto.OTRO;
+        caracteristicas: ProductoGarantiaBase;
     };
 
 
@@ -109,7 +109,8 @@ export interface Garantia {
     id: number;
     consecutivo: string;
     resumen: string;
-    descripcion?: string;
+    descripcion: string;
+    resolucion?: string;
     estadoActual: EstadoGarantia;
     factura: string;
     contacto: {

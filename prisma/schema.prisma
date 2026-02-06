@@ -80,9 +80,10 @@ model Garantia {
   descripcion  String
   estadoActual EstadoGarantia
   factura      String?
+  resolucion   String?
 
-  contacto Json
-  producto Json
+  contacto       Json
+  producto       Json
   reporteTecnico Json
 
   sucursalActualId Int

@@ -5,6 +5,7 @@ export type GarantiaDetails = {
     consecutivo: string | null;
     resumen: string;
     descripcion: string;
+    resolucion?: string;
     estadoActual: EstadoGarantia;
     fechaIngreso: Date;
     contacto: ContactoGarantia;
