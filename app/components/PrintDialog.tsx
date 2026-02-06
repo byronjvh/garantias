@@ -1,5 +1,5 @@
 "use client";
-import { Printer } from "lucide-react";
+import { ArrowLeft, Printer, X } from "lucide-react";
 import PrimaryButton from "./PrimaryButton";
 import { useState } from "react";
 
@@ -59,7 +59,10 @@ export function PrintDialog({
                     </div>
                 </div>
                 <span className="w-px bg-gray-200"></span>
-                <div className="flex flex-col gap-4 py-8 max-w-[300px]">
+                <div className="flex flex-col gap-4 max-w-[300px]">
+                    <div className="flex justify-end mb-4">
+                        <button onClick={handleCancel} className="cursor-pointer text-p-color hover:text-p-color/80"><X /></button>
+                    </div>
                     <h2 className="text-title-color text-xl font-title font-semibold">Boleta de Ingreso</h2>
                     <label htmlFor="document-type" className="text-sm text-p-color">Seleccione el tipo de documento a imprimir</label>
                     <select value={documentType} onChange={handleChange} name="document-type" id="document-type" className="border border-gray-400/60 p-2 rounded">
