@@ -12,6 +12,7 @@ export type GarantiaDetails = {
     producto: ProductoGarantia;
     reporteTecnico?: string[];
     factura: string | null;
+    token: string | null;
     sucursalActual: {
         id: number;
         nombre: string;

@@ -104,6 +104,12 @@ export interface ProductoGarantiaPC extends ProductoGarantiaBase {
     };
 }
 
+export type ProductoGarantiaPublico = {
+    tipo: string;
+    descripcion: string;
+    serie?: string;
+};
+
 
 export interface Garantia {
     id: number;
@@ -113,6 +119,7 @@ export interface Garantia {
     resolucion?: string;
     estadoActual: EstadoGarantia;
     factura: string;
+    token: string | null;
     contacto: {
         nombre: string;
         correo: string;

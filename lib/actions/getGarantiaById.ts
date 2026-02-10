@@ -20,6 +20,7 @@ export async function getGarantiaById(id: number) {
             producto: true,
             reporteTecnico: true,
             factura: true,
+            token: true,
             sucursalActual: {
                 select: {
                     id: true,

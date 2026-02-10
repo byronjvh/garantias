@@ -1,4 +1,4 @@
-import { EstadoGarantia, ESTADOS_GARANTIA, ProductoGarantiaBase, ProductoGarantiaEscritorio, ProductoGarantiaLaptop } from "@/types/types";
+import { EstadoGarantia, ESTADOS_GARANTIA, ProductoGarantia, ProductoGarantiaBase, ProductoGarantiaPC, TipoProducto } from "@/types/types";
 
 export function isEstadoGarantia(v: unknown): v is EstadoGarantia {
     return typeof v === "string" &&
@@ -35,7 +35,7 @@ export function isProductoGarantiaBase(
 
 export function isProductoPC(
     value: unknown
-): value is ProductoGarantiaEscritorio | ProductoGarantiaLaptop {
+): value is ProductoGarantiaPC {
     if (!isProductoGarantiaBase(value)) return false;
 
     const v = value as unknown as Record<string, unknown>;
@@ -63,3 +63,20 @@ export function isProductoPC(
     return true;
 }
 
+export function isProductoGarantia(
+    value: unknown
+): value is ProductoGarantia {
+    if (!value || typeof value !== "object") return false;
+
+    const v = value as Record<string, unknown>;
+
+    if (v.tipo === TipoProducto.PC) {
+        return isProductoPC(v.caracteristicas);
+    }
+
+    if (v.tipo === TipoProducto.OTRO) {
+        return isProductoGarantiaBase(v.caracteristicas);
+    }
+
+    return false;
+}

@@ -81,6 +81,7 @@ model Garantia {
   estadoActual EstadoGarantia
   factura      String?
   resolucion   String?
+  token        String?        @unique
 
   contacto       Json
   producto       Json
