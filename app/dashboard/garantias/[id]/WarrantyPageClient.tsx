@@ -40,7 +40,6 @@ export default function WarrantyPageClient({ garantia }: Props) {
         const culpable = [...document.querySelectorAll("*")].find(el =>
             getComputedStyle(el).color.includes("lab")
         );
-        console.log(culpable)
 
         setLoading(true);
 
@@ -64,7 +63,6 @@ export default function WarrantyPageClient({ garantia }: Props) {
             .finally(() => setLoading(false));
     };
     const producto = garantia.producto
-    console.log(garantia)
     return (
         <div className="mx-auto w-full max-w-[800px] h-full flex flex-col gap-4 bg-card-bg p-4 border border-gray-400/60 rounded shadow-lg/5">
 
@@ -247,6 +245,7 @@ export default function WarrantyPageClient({ garantia }: Props) {
                     )
                 }
             </div>
+            <a href={`/garantia/${garantia.token}`}>Página de cliente</a>
             {
                 producto.tipo === TipoProducto.PC && (
                     <InfoDialog disclaimer="Ingresado al registrar la garantía." open={openSpecs} handleOpen={handleOpenSpecs} className="flex flex-col gap-4 border border-gray-400/60 rounded-md p-4" >
