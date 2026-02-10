@@ -6,30 +6,62 @@ import { prisma } from "../prisma";
 
 type GetGarantiasParams = {
     page?: number;
+    search?: string;
+    estado?: EstadoGarantia | null;
+    sucursal?: string | null;
     sucursalActualId?: number;
     canViewAll: boolean;
 };
 
-const PAGE_SIZE = 10;
+
+const PAGE_SIZE = 20;
 
 export async function getGarantiasList({
     page = 1,
     sucursalActualId,
     canViewAll,
+    search,
+    estado,
+    sucursal
 }: GetGarantiasParams) {
+
+    const where: any = {};
+
+    if (!canViewAll && sucursalActualId) {
+        where.sucursalActualId = sucursalActualId;
+    }
+
+
+    if (search) {
+        where.OR = [
+            { consecutivo: { contains: search, mode: "insensitive" } },
+            { resumen: { contains: search, mode: "insensitive" } },
+            { contacto: { path: ["nombre"], string_contains: search } },
+            { contacto: { path: ["correo"], string_contains: search } },
+            { contacto: { path: ["telefono"], string_contains: search } },
+            { producto: { path: ["caracteristicas", "descripcion"], string_contains: search } },
+            { sucursalActual: { nombre: { contains: search, mode: "insensitive" } } },
+            { sucursalIngreso: { nombre: { contains: search, mode: "insensitive" } } },
+        ];
+    }
+
+    if (estado) {
+        where.estadoActual = estado;
+    }
+
+    if (sucursal) {
+        where.sucursalIngreso = {
+            nombre: sucursal,
+        };
+    }
+
     const skip = (page - 1) * PAGE_SIZE;
 
-    const where = canViewAll
-        ? {}
-        : {
-            sucursalActualId,
-        };
-
-    const [itemsRaw, total] = await Promise.all([
+    const [itemsRaw, total] = await prisma.$transaction([
         prisma.garantia.findMany({
+            where,
             skip,
             take: PAGE_SIZE,
-            where,
             orderBy: { fechaIngreso: "desc" },
             select: {
                 id: true,
@@ -38,20 +70,13 @@ export async function getGarantiasList({
                 estadoActual: true,
                 fechaIngreso: true,
                 contacto: true,
-                producto: true, // JSON
+                producto: true,
+                resolucion: true,
                 sucursalActual: {
-                    select: {
-                        id: true,
-                        nombre: true,
-                        prefijo: true,
-                    },
+                    select: { id: true, nombre: true, prefijo: true },
                 },
                 sucursalIngreso: {
-                    select: {
-                        id: true,
-                        nombre: true,
-                        prefijo: true,
-                    },
+                    select: { id: true, nombre: true, prefijo: true },
                 },
             },
         }),
@@ -68,6 +93,7 @@ export async function getGarantiasList({
             fechaIngreso: g.fechaIngreso,
             contacto: parseContactoGarantia(g.contacto),
             producto: parseProductoGarantia(g.producto),
+            resolucion: g.resolucion,
             sucursalActual: {
                 id: g.sucursalActual.id,
                 nombre: g.sucursalActual.nombre,

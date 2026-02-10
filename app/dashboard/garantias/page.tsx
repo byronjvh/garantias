@@ -13,6 +13,7 @@ import { Rol } from "@/lib/generated/prisma/enums";
 import { ColorRing } from "react-loader-spinner";
 import { getRol } from "@/app/actions";
 import { searchFilter, statusFilter, sucursalFilter } from "@/app/logic/filters";
+import { useDebounce } from "@/app/hooks/useDebounce";
 
 
 export type GarantiaItem = {
@@ -42,9 +43,12 @@ export default function GarantiasPage() {
     const [page, setPage] = useState<number>(1);
     const [statusToFilter, setStatusToFilter] = useState<EstadoGarantia | null>(null);
     const [sucursalToFilter, setSucursalToFilter] = useState<string | null>(null);
+    const [selectedIds, setSelectedIds] = useState<number[]>([]);
     const [sucursalActualId, setSucursalActualId] = useState<number | undefined>(
         sucursales[0]?.id
     );
+
+    const debouncedSearch = useDebounce(searchQuery, 400);
 
     const handleStatusToFilter = (
         e: React.ChangeEvent<HTMLSelectElement>
@@ -61,23 +65,32 @@ export default function GarantiasPage() {
         setSucursalToFilter(sucursal)
     };
 
-    const filteredItems = sucursalFilter(statusFilter(searchFilter(items, searchQuery), statusToFilter), sucursalToFilter)
-    console.log(statusToFilter, items[0]?.estadoActual)
+    const filteredItems = sucursalFilter(statusFilter(searchFilter(items, debouncedSearch), statusToFilter), sucursalToFilter)
+
+    const allSelected =
+        filteredItems.length > 0 &&
+        selectedIds.length === filteredItems.length;
+
+    const partiallySelected =
+        selectedIds.length > 0 &&
+        selectedIds.length < filteredItems.length;
+
     useEffect(() => {
         let cancelled = false;
         setLoading(true);
 
         (async () => {
             const { rol } = await getRol();
-            console.log(rol)
             const canViewAll = rol === Rol.TECNICO_2 || rol === Rol.TI;
 
             const { items } = await getGarantiasAction({
                 page,
+                search: debouncedSearch,
+                estado: statusToFilter,
+                sucursal: sucursalToFilter,
                 canViewAll,
-                sucursalActualId: canViewAll ? undefined : sucursalActualId,
+                sucursalActualId,
             }).finally(() => setLoading(false));
-            console.log(items)
 
             if (!cancelled) {
                 setItems(items);
@@ -85,10 +98,11 @@ export default function GarantiasPage() {
 
         })();
 
+        setSelectedIds([]);
         return () => {
             cancelled = true;
         };
-    }, [page, sucursalActualId]);
+    }, [debouncedSearch, page, statusToFilter, sucursalToFilter, sucursalActualId]);
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const query = e.target.value
@@ -151,7 +165,21 @@ export default function GarantiasPage() {
             <div>
                 <div className="bg-card-bg p-4 border-x border-t border-gray-400/60 grid grid-cols-[.5fr_1fr_5fr_3fr_3fr_2fr_2fr] gap-6 text-sm uppercase items-center">
                     <div>
-                        <input className="w-4 h-4 accent-primary cursor-pointer" type="checkbox" name="selectAll" id="selectAll" />
+                        <input
+                            type="checkbox"
+                            className="w-4 h-4 accent-primary cursor-pointer"
+                            checked={allSelected}
+                            ref={el => {
+                                if (el) el.indeterminate = partiallySelected;
+                            }}
+                            onChange={e => {
+                                if (e.target.checked) {
+                                    setSelectedIds(filteredItems.map(g => g.id));
+                                } else {
+                                    setSelectedIds([]);
+                                }
+                            }}
+                        />
                     </div>
                     <p className="opacity-70">N° Caso</p>
                     <p className="opacity-70">Descripción</p>
@@ -160,9 +188,9 @@ export default function GarantiasPage() {
                     <p className="opacity-70">Sucursal</p>
                     <p className="opacity-70">Fecha</p>
                 </div>
-                <ul className="bg-card-bg flex flex-col gap-4 p-2 py-4 rounded-b border border-gray-400/60 divide-y divide-gray-200">
+                <ul className="bg-card-bg flex flex-col gap-4 p-2 py-4 rounded-b border border-gray-400/60 divide-y divide-gray-200 h-[500px] overflow-y-scroll">
                     {
-                        loading && (
+                        loading ? (
                             <span className="self-center">
                                 <ColorRing
                                     visible={true}
@@ -174,54 +202,63 @@ export default function GarantiasPage() {
                                     colors={['#F97316', '#FDBA74', '#84CC16', '#4D7C0F', '#365314']}
                                 />
                             </span>
+                        ) : (
+                            filteredItems?.map((garantia) => (
+                                <li key={garantia.id}>
+                                    <article className="p-2 py-4 grid grid-cols-[.5fr_1fr_5fr_3fr_3fr_2fr_2fr] gap-6 text-sm items-center">
+                                        <div>
+                                            <input
+                                                type="checkbox"
+                                                className="w-4 h-4 accent-primary cursor-pointer"
+                                                checked={selectedIds.includes(garantia.id)}
+                                                onChange={e => {
+                                                    setSelectedIds(prev =>
+                                                        e.target.checked
+                                                            ? [...prev, garantia.id]
+                                                            : prev.filter(id => id !== garantia.id)
+                                                    );
+                                                }}
+                                            />
+                                        </div>
+                                        <p className="">{garantia.consecutivo}</p>
+                                        <div className="w-full max-w-[340px] gap-0.5 ">
+                                            <Link
+                                                href={`/dashboard/garantias/${garantia.id}`}
+                                                className="block hover:underline"
+                                            >
+                                                <p className="font-medium leading-tight">
+                                                    {garantia.resumen}
+                                                </p>
+                                                <p className="text-xs opacity-70">
+                                                    {garantia.contacto.nombre}
+                                                </p>
+                                            </Link>
+                                        </div>
+                                        <p>{garantia.producto.caracteristicas.descripcion}</p>
+                                        <div className="">
+                                            <WarrantyStatus estado={garantia.estadoActual} />
+                                        </div>
+                                        <p>{garantia.sucursalActual.nombre}</p>
+                                        <div className="flex flex-col gap-0.5">
+                                            <span className="font-medium">
+                                                {garantia.fechaIngreso.toLocaleDateString("es-CR", {
+                                                    day: "2-digit",
+                                                    month: "2-digit",
+                                                    year: "numeric",
+                                                })}
+                                            </span>
+                                            <span className="text-xs text-muted-foreground">
+                                                {garantia.fechaIngreso.toLocaleTimeString("es-CR", {
+                                                    hour: "2-digit",
+                                                    minute: "2-digit",
+                                                })}
+                                            </span>
+                                        </div>
+                                    </article>
+                                </li>
+                            ))
                         )
                     }
-                    {
-                        filteredItems?.map((garantia) => (
-                            <li key={garantia.id}>
-                                <article className="p-2 py-4 grid grid-cols-[.5fr_1fr_5fr_3fr_3fr_2fr_2fr] gap-6 text-sm items-center">
-                                    <div>
-                                        <input className="w-4 h-4 accent-primary cursor-pointer" type="checkbox" name="selectWarranty" id="selectWarranty" />
-                                    </div>
-                                    <p className="">{garantia.consecutivo}</p>
-                                    <div className="w-full max-w-[340px] gap-0.5 ">
-                                        <Link
-                                            href={`/dashboard/garantias/${garantia.id}`}
-                                            className="block hover:underline"
-                                        >
-                                            <p className="font-medium leading-tight">
-                                                {garantia.resumen}
-                                            </p>
-                                            <p className="text-xs opacity-70">
-                                                {garantia.contacto.nombre}
-                                            </p>
-                                        </Link>
-                                    </div>
-                                    <p>{garantia.producto.caracteristicas.descripcion}</p>
-                                    <div className="">
-                                        <WarrantyStatus estado={garantia.estadoActual} />
-                                    </div>
-                                    <p>{garantia.sucursalActual.nombre}</p>
-                                    <div className="flex flex-col gap-0.5">
-                                        <span className="font-medium">
-                                            {garantia.fechaIngreso.toLocaleDateString("es-CR", {
-                                                day: "2-digit",
-                                                month: "2-digit",
-                                                year: "numeric",
-                                            })}
-                                        </span>
-                                        <span className="text-xs text-muted-foreground">
-                                            {garantia.fechaIngreso.toLocaleTimeString("es-CR", {
-                                                hour: "2-digit",
-                                                minute: "2-digit",
-                                            })}
-                                        </span>
-                                    </div>
-                                </article>
-                            </li>
-                        ))
-                    }
-
                 </ul>
             </div>
         </>
