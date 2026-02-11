@@ -1,5 +1,7 @@
 import { isProductoGarantia } from "@/app/utils/guards";
 import { prisma } from "@/lib/prisma";
+import { parseContactoGarantia } from "../normalizers/parseContactoGarantia";
+import { parseProductoGarantia } from "../normalizers/parseProductoGarantia";
 
 export async function getPublicGarantia(token: string) {
     const g = await prisma.garantia.findUnique({
@@ -8,7 +10,10 @@ export async function getPublicGarantia(token: string) {
             consecutivo: true,
             estadoActual: true,
             fechaIngreso: true,
+            sucursalIngreso: true,
             producto: true,
+            contacto: true,
+            descripcion: true,
             historial: {
                 select: {
                     fecha: true,
@@ -34,12 +39,15 @@ export async function getPublicGarantia(token: string) {
     return {
         consecutivo: g.consecutivo,
         estadoActual: g.estadoActual,
-        fechaIngreso: g.fechaIngreso.toISOString(),
-        producto: g.producto,
+        fechaIngreso: g.fechaIngreso,
+        producto: parseProductoGarantia(g.producto),
+        sucursalIngreso: g.sucursalIngreso,
+        contacto: parseContactoGarantia(g.contacto),
+        descripcion: g.descripcion,
         historial: g.historial.map(h => ({
-            fecha: h.fecha.toISOString(),
+            fecha: h.fecha,
             estado: h.estado,
-            sucursal: `${h.sucursal.prefijo} - ${h.sucursal.nombre}`,
+            sucursal: h.sucursal.nombre,
         })),
     };
 }

@@ -45,6 +45,61 @@ export const ESTADOS_GARANTIA = [
     "RESUELTA"
 ] as const;
 
+export type EstadoPublicoGarantia =
+    | "RECIBIDA"
+    | "EN_REVISION"
+    | "EN_PROCESO"
+    | "LISTA_PARA_RETIRO";
+
+export const ESTADO_PUBLICO_MAP: Record<
+    EstadoGarantia,
+    EstadoPublicoGarantia
+> = {
+    INGRESADA: "RECIBIDA",
+
+    EN_REVISION_SUCURSAL: "EN_REVISION",
+    ESCALADA_A_CEDI: "EN_REVISION",
+    EN_REVISION_CEDI: "EN_REVISION",
+
+    ENVIADA_A_PROVEEDOR: "EN_PROCESO",
+    ESPERANDO_REPUESTO: "EN_PROCESO",
+    EN_REPARACION: "EN_PROCESO",
+    DEVUELTA_A_SUCURSAL: "EN_PROCESO",
+
+    LISTA_PARA_RETIRO: "LISTA_PARA_RETIRO",
+
+    RESUELTA: "LISTA_PARA_RETIRO",
+    RECHAZADA: "LISTA_PARA_RETIRO",
+};
+
+export const ESTADO_PUBLICO_LABEL: Record<
+    EstadoPublicoGarantia,
+    string
+> = {
+    RECIBIDA: "Producto recibido",
+    EN_REVISION: "En revisión",
+    EN_PROCESO: "En proceso",
+    LISTA_PARA_RETIRO: "Lista para retirar",
+};
+
+export const ESTADO_PUBLICO_DESCRIPCION: Record<
+    EstadoPublicoGarantia,
+    string
+> = {
+    RECIBIDA:
+        "Hemos recibido tu producto en la tienda.",
+
+    EN_REVISION:
+        "Estamos evaluando el producto para determinar la mejor solución.",
+
+    EN_PROCESO:
+        "El caso se encuentra en gestión y seguimiento por nuestro equipo.",
+
+    LISTA_PARA_RETIRO:
+        "Tu producto ya está disponible para ser retirado en la tienda.",
+};
+
+
 export enum TipoProducto {
     PC = "PC",
     OTRO = "OTRO",

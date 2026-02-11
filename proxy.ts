@@ -45,9 +45,10 @@ export async function proxy(req: NextRequest) {
         return NextResponse.next();
     }
 
-    const isPublicRoute =
-        pathname.startsWith("/sign-in") ||
-        pathname.startsWith("/garantia/")
+    const isSignInRoute = pathname.startsWith("/sign-in");
+    const isGarantiaPublicaRoute = pathname.startsWith("/garantia/");
+
+    const isPublicRoute = isSignInRoute || isGarantiaPublicaRoute;
     const isSucursalSelectionRoute = pathname === "/dashboard";
 
     // 🔐 2️⃣ Ahora sí, sesión
@@ -69,7 +70,7 @@ export async function proxy(req: NextRequest) {
     }
 
     // 3️⃣ Usuario autenticado intentando entrar a /sign-in
-    if (session && isPublicRoute) {
+    if (session && isSignInRoute) {
         const userId = session.user.id;
         const { tieneSucursal } = await verificarSucursal(userId);
 
