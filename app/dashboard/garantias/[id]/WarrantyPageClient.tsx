@@ -69,7 +69,7 @@ export default function WarrantyPageClient({ garantia }: Props) {
             {/* HEADER */}
             <header className="flex items-center justify-between rounded-md bg-card-bg p-4 border border-gray-400/60">
                 <div>
-                    <h1 className="text-xl font-semibold text-slate-800">
+                    <h1 className="text-xl font-title font-semibold text-slate-800">
                         Caso {garantia.consecutivo}
                     </h1>
                     <p className="text-sm text-slate-500">
@@ -99,7 +99,7 @@ export default function WarrantyPageClient({ garantia }: Props) {
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 {/* Cliente */}
                 <div className="rounded-md bg-card-bg p-4 border border-gray-400/60">
-                    <h3 className="mb-2 text-sm font-semibold text-slate-700">
+                    <h3 className="mb-2 font-title text-sm font-semibold text-slate-700">
                         Cliente
                     </h3>
                     <p className="text-sm text-slate-800">{garantia.contacto.nombre}</p>
@@ -109,7 +109,7 @@ export default function WarrantyPageClient({ garantia }: Props) {
 
                 {/* Producto */}
                 <div className="rounded-md bg-card-bg p-4 border border-gray-400/60">
-                    <h3 className="mb-2 text-sm font-semibold text-slate-700">
+                    <h3 className="mb-2 font-title text-sm font-semibold text-slate-700">
                         Producto
                     </h3>
                     <p className="text-sm text-slate-800">
@@ -127,7 +127,7 @@ export default function WarrantyPageClient({ garantia }: Props) {
 
                 {/* Falla */}
                 <div className="rounded-md bg-card-bg p-4 border border-gray-400/60">
-                    <h3 className="mb-2 text-sm font-semibold text-slate-700">
+                    <h3 className="mb-2 font-title text-sm font-semibold text-slate-700">
                         Resumen
                     </h3>
                     <p className="text-sm text-slate-800 line-clamp-3">

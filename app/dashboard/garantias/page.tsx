@@ -188,7 +188,7 @@ export default function GarantiasPage() {
                     <p className="opacity-70">Sucursal</p>
                     <p className="opacity-70">Fecha</p>
                 </div>
-                <ul className="bg-card-bg flex flex-col gap-4 p-2 py-4 rounded-b border border-gray-400/60 divide-y divide-gray-200 h-[500px] overflow-y-scroll">
+                <ul className="bg-card-bg flex flex-col gap-4 p-2 py-4 border border-gray-400/60 divide-y divide-gray-200 h-[500px] overflow-y-scroll">
                     {
                         loading ? (
                             <span className="self-center">
@@ -260,6 +260,9 @@ export default function GarantiasPage() {
                         )
                     }
                 </ul>
+                <div className="bg-card-bg px-4 h-12 flex items-center border-x border-b border-gray-400/60 rounded-b">
+                    Página {page}
+                </div>
             </div>
         </>
     );
