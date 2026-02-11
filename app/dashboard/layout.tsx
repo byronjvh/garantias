@@ -40,7 +40,9 @@ export default async function DashboardLayout({
     return (
         <DashboardProvider value={{ sucursales }}>
             <div className="h-svh flex flex-col text-p-color">
-                <header className="flex justify-between items-center w-full h-14 p-4 bg-card-bg z-10 shadow"><a href=""><img src="/Tukomer_2.png" alt="logo" className="h-10 object-contain" /></a></header>
+                <header className="flex justify-between items-center w-full h-14 p-4 bg-card-bg z-10 shadow">
+                    <a href=""><img src="/Tukomer_2.png" alt="logo" className="h-10 object-contain" /></a>
+                </header>
                 <div className="flex flex-1 h-[calc(100svh-60px)]">
                     <aside className="px-2 pt-4 h-full w-full max-w-[250px] bg-card-bg border-r border-gray-400/60">
                         <ul className="flex flex-col gap-2">
